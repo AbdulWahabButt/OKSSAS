@@ -8,7 +8,6 @@
         <EntityTypeShape EntityType="FYPDatabaseModel.Item" Width="1.5" PointX="0.75" PointY="0.75" IsExpanded="true" />
         <EntityTypeShape EntityType="FYPDatabaseModel.Message" Width="1.5" PointX="2.75" PointY="0.75" IsExpanded="true" />
         <EntityTypeShape EntityType="FYPDatabaseModel.Comment" Width="1.5" PointX="4.75" PointY="0.75" />
-        <EntityTypeShape EntityType="FYPDatabaseModel.History" Width="1.5" PointX="0.75" PointY="4.75" />
         <EntityTypeShape EntityType="FYPDatabaseModel.LearnerEducator" Width="1.5" PointX="2.75" PointY="4.75" />
         <EntityTypeShape EntityType="FYPDatabaseModel.AddToFavorite" Width="1.5" PointX="4.75" PointY="3.75" />
         <EntityTypeShape EntityType="FYPDatabaseModel.Discussion" Width="1.5" PointX="6.75" PointY="0.75" />
