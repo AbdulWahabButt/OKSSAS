@@ -1,0 +1,25 @@
+﻿@{
+    Layout = null;
+}
+
+@if (ViewBag.DiscussionCount == 0)
+{
+    <p class="alert-message">There is no Content to Display</p>
+}
+else
+{
+    foreach (var list in ViewBag.Discussion)
+    {
+        <div class="media">
+            <a class="pull-left" href="#">
+                <img class="media-object" data-src="holder.js/64x64" alt="64x64" src="@ViewBag.Admin.ProfilePic" style="width: 64px; height: 64px;">
+            </a>
+            <div class="media-body">
+                <h4 class="media-heading"><a href="/Learner/ViewDiscussion?DiscussionId=@list.Discussion_Id">@list.Title</a></h4>
+                @*<small style="margin-right:5px"><a href="/Learner/EditDiscussion?DiscussionId=@list.Discussion_Id">Edit</a></small>
+                <small><a href="/Learner/DeleteDiscussion?DiscussionId=@list.Discussion_Id">Delete</a></small>*@
+
+            </div>
+        </div>
+    }
+}

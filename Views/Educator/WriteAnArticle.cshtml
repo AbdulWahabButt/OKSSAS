@@ -1,0 +1,162 @@
+﻿@{
+    ViewBag.Title = "Write an Article";
+}
+<link rel="stylesheet" href="~/Scripts/skins/lightgray/jquery-ui-1.10.4.custom.min.css" />
+<script src="~/Scripts/jquery-ui-1.10.4.custom.min.js"></script>
+
+<div class="container">
+
+    <div class="row" style="margin-top: 35px;">
+
+        <div class="col-md-3">
+            <div class="list-group">
+                <span class="list-group-item list-group-title">
+                    Menu
+                </span>
+                <a href="/Educator" class="list-group-item"><span class="glyphicon glyphicon-home"></span>&nbsp;&nbsp;Dashboard</a>
+                <a href="/Educator/WriteAnArticle" class="list-group-item active"><span class="glyphicon glyphicon-pencil"></span>&nbsp;&nbsp;Write an Article</a>
+                <a href="/Educator/UploadContent" class="list-group-item"><span class="glyphicon glyphicon-upload"></span>&nbsp;&nbsp;Upload Content</a>
+                <a href="/Educator/Items" class="list-group-item"><span class="glyphicon glyphicon-th-list"></span>&nbsp;&nbsp;My Items</a>
+                <a href="/Educator/Discussions" class="list-group-item"><span class="glyphicon glyphicon-bullhorn"></span>&nbsp;&nbsp;Discussions</a>
+                <a href="/Educator/TextChat" class="list-group-item"><span class="glyphicon glyphicon-font"></span>&nbsp;&nbsp;Text Chat</a>
+                <a href="/Educator/VideoConference" class="list-group-item"><span class="glyphicon glyphicon-facetime-video"></span>&nbsp;&nbsp;Video Conference</a>
+                <a href="/Educator/DesktopSharing" class="list-group-item"><span class="glyphicon glyphicon-film"></span>&nbsp;&nbsp;Desktop Sharing</a>
+                <a href="/Educator/ProfileSetting" class="list-group-item"><span class="glyphicon glyphicon-cog"></span>&nbsp;&nbsp;Settings</a>
+                <a href="/Educator/Revenue" class="list-group-item"><span class="glyphicon glyphicon-usd"></span>&nbsp;&nbsp;Revenue</a>
+                <a href="/Educator/Inbox" class="list-group-item">
+                    <span class="glyphicon glyphicon-envelope"></span>&nbsp;&nbsp;<span>
+                        Message&nbsp; @if (ViewBag.UnreadMessage != 0)
+                        {<span id="unreadMessageCount" class="badge">@ViewBag.UnreadMessage</span>}
+                    </span>
+                </a>
+            </div>
+        </div>
+
+        <div class="col-md-9">
+
+            <div class="panel panel-default panel-items">
+                <div class="panel-heading">
+                    <h3 class="panel-title"> Write an Article</h3>
+                </div>
+                <div class="panel-body">
+                    <form class="form-horizontal" style="margin-top:10px;" method="post" action="/Educator/WriteAnArticle" onsubmit="SavePrice()">
+                        
+                        <div class="form-group">
+                            <label class="col-md-1 control-label" for="title" style="margin-left:4px">Title&nbsp;</label>
+                            <div class="col-md-4">
+                                <input id="title" name="title" type="text" placeholder="Enter title here..." class="form-control input-md" required>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-md-1 control-label" for="Price" style="margin-left:4px">Price</label>
+                            <div class="col-md-2">
+                                <input id="costHolder" class="form-control" type="number" min="0" max="99999.99">
+                                <input id="cost" name="cost" type="hidden" value="0">
+                            </div>
+                            <div class="col-md-2" style="margin-top:4px">
+                                <input id="freecheckbox" type="checkbox" onchange="FreeCheckboxClicked(this)"> <span>Free</span>
+                            </div>
+                        </div>
+         
+                        <div class="form-group">
+                            <label class="col-md-1 control-label" for="tags" style="margin-left:4px">Tags&nbsp;</label>
+                            <div class="col-md-8">
+                                <input type="text" class="tags form-control" name="Category" data-role="tagsinput" placeholder="Write Tags" style="margin-top:10px;" />
+                            </div>
+                        </div>
+
+                        <textarea name="Content" style="width:100%; height:400px; margin-top:10px"></textarea>
+
+                        <div class="form-group" style="margin-top:10px">
+                            <div class="col-md-2">
+                                <input type="submit" class="btn btn-primary" value="Upload Content" />
+                            </div>
+                        </div>
+                    </form>
+
+                </div> <!-- .col-md-10 -->
+            </div>
+        </div>
+    </div>
+
+</div><!-- /.container -->
+<!-- Bootstrap core JavaScript
+================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+@*<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>*@
+
+@*<script src="~/Scripts/bootstrap.min.js"></script>*@
+<!-- javascript
+================================================== -->
+<!-- Load jQuery build -->
+
+<script type="text/javascript" src="~/Scripts/tinymce.min.js"></script>
+<script type="text/javascript" src="~/Scripts/autocomplete.js"></script>
+@*<script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>*@
+<script type="text/javascript" src="~/Scripts/bootstrap-tagsinput.min.js"></script>
+@*<link href="~/Css/bootstrap.min.css" rel="stylesheet">
+    <link href="~/Css/starter-template.css" rel="stylesheet">*@
+@*<script type="text/javascript" src="assets/js/bootstrap-tagsinput.min.js"></script>*@
+
+
+<script type="text/javascript">
+    tinymce.init({
+        selector: "textarea",
+        theme: "modern",
+        plugins: [
+            "advlist autolink lists link image charmap print preview hr anchor pagebreak",
+            "searchreplace wordcount visualblocks visualchars code fullscreen",
+            "insertdatetime media nonbreaking save table contextmenu directionality",
+            "emoticons template paste textcolor"
+        ],
+        toolbar1: "insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image",
+        toolbar2: "print preview media | forecolor backcolor emoticons",
+        image_advtab: true,
+        templates: [
+            { title: 'Test template 1', content: 'Test 1' },
+            { title: 'Test template 2', content: 'Test 2' }
+        ]
+    });
+
+    function FreeCheckboxClicked(checkbox) {
+        if (checkbox.checked) {
+            document.getElementById("costHolder").disabled = true;
+        } else {
+            document.getElementById("costHolder").disabled = false;
+        }
+    }
+
+    function SavePrice() {
+
+        if (document.getElementById("freecheckbox") != null && document.getElementById("freecheckbox").checked) {
+
+        }
+        else {
+            var costHolder = document.getElementById("costHolder").value;
+
+            if (costHolder.toString() != "") {
+                document.getElementById("cost").value = costHolder;
+            }
+        }
+    }
+</script>
+
+<script>
+    jQuery(document).ready(function () {
+        var availableTags = [
+            @Html.Raw(ViewBag.TagSuggestion)
+        ];
+
+        jQuery("#tags").autocomplete({
+            source: availableTags
+        });
+
+        $("#tags").blur(function () {
+            var e = jQuery.Event("keydown");
+            e.which = 13; // Enter
+            $("#tags").trigger(e);
+        });
+    });
+</script>

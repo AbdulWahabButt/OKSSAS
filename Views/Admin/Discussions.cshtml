@@ -1,0 +1,93 @@
+﻿@{
+    ViewBag.Title = "Discussion";
+}
+
+<div class="container">
+
+    <div class="row" style="margin-top: 35px;">
+
+        <div class="col-md-3">
+            <div class="list-group">
+                <span class="list-group-item list-group-title">
+                    Menu
+                </span>
+                <a href="/Admin" class="list-group-item"><span class="glyphicon glyphicon-home"></span>&nbsp;&nbsp;Dashboard</a>
+                <a href="/Admin/StartNewDiscussion" class="list-group-item"><span class="glyphicon glyphicon-pencil"></span>&nbsp;&nbsp;Start New Discussion</a>
+                <a href="/Admin/Discussions" class="list-group-item active"><span class="glyphicon glyphicon-bullhorn"></span>&nbsp;&nbsp;Discussions</a>
+                <a href="/Admin/Users" class="list-group-item"><span class="glyphicon glyphicon-user"></span>&nbsp;&nbsp;Users</a>
+                <a href="/Admin/Items" class="list-group-item"><span class="glyphicon glyphicon-th-list"></span>&nbsp;&nbsp;Items</a>
+                <a href="/Admin/Inbox" class="list-group-item">
+                    <span class="glyphicon glyphicon-envelope"></span>&nbsp;&nbsp;<span>
+                        Message&nbsp; @if (ViewBag.UnreadMessage != 0)
+                        {<span id="unreadMessageCount" class="badge">@ViewBag.UnreadMessage</span>}
+                    </span>
+                </a>
+            </div>
+        </div>
+        <div class="col-md-9">
+            <div class="panel panel-default panel-discussion">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Discussions</h3>
+                </div>
+                <div class="panel-body">
+
+                    <div class="input-group col-md-offset-3 col-md-6">
+                        <input id="searchTitle" type="text" class="form-control" placeholder="Enter a Title">
+                        <span class="input-group-btn">
+                            <button class="btn btn-default" type="button" onclick="LoadDiscussion()"><span class="glyphicon glyphicon-search"></span> Search</button>
+                        </span>
+                    </div><!-- /input-group -->
+                    <br />
+                    <br />
+                    <hr />
+
+                    <div id="discussionList">
+                        @if (ViewBag.DiscussionCount == 0)
+                        {
+                            <p class="alert-message">There is no Content to Display</p>
+                        }
+                        else
+                        {
+                            foreach (var list in ViewBag.Discussion)
+                            {
+                                <div class="media">
+                                    <a class="pull-left" href="#">
+                                        <img class="media-object" data-src="holder.js/64x64" alt="64x64" src="@ViewBag.Admin.ProfilePic" style="width: 64px; height: 64px;">
+                                    </a>
+                                    <div class="media-body">
+                                        <h4 class="media-heading"><a href="/Admin/ViewDiscussion?DiscussionId=@list.Discussion_Id">@list.Title</a></h4>
+                                        <small style="margin-right:5px"><a href="/Admin/EditDiscussion?discussionId=@list.Discussion_Id">Edit</a></small>
+                                        <small><a href="" onclick="DeleteDiscussion('@list.Discussion_Id')">Delete</a></small>
+
+                                    </div>
+                                </div>
+                            }
+                        }
+                    </div>
+                </div>
+            </div>
+
+        </div> <!-- .col-md-10 -->
+    </div>
+</div><!-- /.container -->
+
+<script>
+
+    function DeleteDiscussion(discussionId) {
+
+        $.getJSON("/Admin/DeleteDiscussion?discussionId=" + discussionId, function (data) {
+            if (data) {
+                LoadDiscussion();
+            }
+            else {
+                Console.log("Error: Item is not deleted");
+            }
+        });
+    }
+
+    function LoadDiscussion() {
+        var searchTitle = document.getElementById("searchTitle").value.toString().replace(/[ ]/g, "%20");
+        $("#discussionList").load("/Admin/LoadDiscussion?title=" + searchTitle);
+    }
+
+</script>

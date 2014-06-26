@@ -1,0 +1,101 @@
+﻿@{
+    ViewBag.Title = "Compose Message";
+}
+
+<link rel="stylesheet" href="~/Scripts/skins/lightgray/jquery-ui-1.10.4.custom.min.css" />
+<script src="~/Scripts/jquery-ui-1.10.4.custom.min.js"></script>
+
+<div class="container">
+
+    <div class="row" style="margin-top: 35px;">
+
+        <div class="col-md-3">
+
+            <div class="list-group">
+                <span class="list-group-item list-group-title">
+                    Menu
+                </span>
+                <a href="/Learner" class="list-group-item"><span class="glyphicon glyphicon-home"></span>&nbsp;&nbsp;Dashboard</a>
+                <a href="/Learner/EducatorSubscription" class="list-group-item"><span class="glyphicon glyphicon-thumbs-up"></span>&nbsp;&nbsp;Educator Subscription</a>
+                <a href="/Learner/FavoriteList" class="list-group-item"><span class="glyphicon glyphicon-list-alt"></span>&nbsp;&nbsp;Favorite List</a>
+                <a href="/Learner/Discussions" class="list-group-item"><span class="glyphicon glyphicon-bullhorn"></span>&nbsp;&nbsp;Discussions</a>
+                <a href="/Learner/TextChat" class="list-group-item"><span class="glyphicon glyphicon-font"></span>&nbsp;&nbsp;Text Chat</a>
+                <a href="/Learner/VideoConference" class="list-group-item"><span class="glyphicon glyphicon-facetime-video"></span>&nbsp;&nbsp;Video Conference</a>
+                <a href="/Learner/DesktopSharing" class="list-group-item"><span class="glyphicon glyphicon-film"></span>&nbsp;&nbsp;Desktop Sharing</a>
+                <a href="/Learner/ProfileSetting" class="list-group-item"><span class="glyphicon glyphicon-cog"></span>&nbsp;&nbsp;Settings</a>
+                <a href="/Learner/Inbox" class="list-group-item" style="padding-left:30px">
+                    <span class="glyphicon glyphicon-envelope"></span>&nbsp;&nbsp;<b>
+                        Message&nbsp;&nbsp;@if (ViewBag.UnreadMessage != 0)
+                        {<span id="unreadMessageCount" class="badge">@ViewBag.UnreadMessage</span>}
+                    </b>
+                </a>
+                <a href="/Learner/Inbox" class="list-group-item" style="margin-left:15px"><span class="glyphicon glyphicon-import"></span>&nbsp;&nbsp;Inbox</a>
+                <a href="/Learner/SentMessage" class="list-group-item" style="margin-left:15px"><span class="glyphicon glyphicon-export"></span>&nbsp;&nbsp;Sent Message</a>
+                <a href="/Learner/ComposeMessage" class="list-group-item active" style="margin-left:15px"><span class="glyphicon glyphicon-edit"></span>&nbsp;&nbsp;Compose Message</a>
+            </div>
+
+        </div>
+        <div class="col-md-9">
+
+            <div class="panel panel-default panel-message">
+                <div class="panel-heading">
+                    <h3 class="panel-title">New Message</h3>
+                </div>
+                <div class="panel-body">
+
+                    <form style="margin-top:10px;" method="post" action="/Learner/ComposeMessage">
+                        @Html.AntiForgeryToken()
+                        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                        <input type="text" name="ToUserName" id="ToUserName" class="form-control" placeholder="To" value="@ViewBag.ToUserName" />
+                        <input type="text" name="Title" id="Title" class="form-control" placeholder="Title" style="margin-top:10px; width:100%; margin-bottom: 10px" required />
+
+                        <textarea name="Body" style="width:100%; height:300px;"></textarea>
+
+                        <div class="form-group" style="margin-top:10px">
+                            <div class="col-md-5">
+                                <input type="submit" class="btn btn-primary" value="Send" />&nbsp; &nbsp;
+                                <a href="/Educator/Inbox" class="btn btn-default">Cancel</a>
+                            </div>
+                        </div>
+                    </form>
+                    
+                </div> <!-- .col-md-10 -->
+            </div>
+
+        </div><!-- /.container -->
+    </div>
+</div>
+
+<script type="text/javascript" src="~/Scripts/tinymce.min.js"></script>
+<script type="text/javascript" src="~/Scripts/autocomplete.js"></script>
+<script type="text/javascript" src="~/Scripts/bootstrap-tagsinput.min.js"></script>
+<script type="text/javascript">
+    tinymce.init({
+        selector: "textarea",
+        theme: "modern",
+        plugins: [
+            "advlist autolink lists link image charmap print preview hr anchor pagebreak",
+            "searchreplace wordcount visualblocks visualchars code fullscreen",
+            "insertdatetime media nonbreaking save table contextmenu directionality",
+            "emoticons template paste textcolor"
+        ],
+        toolbar1: "insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image",
+        toolbar2: "print preview media | forecolor backcolor emoticons",
+        image_advtab: true,
+        templates: [
+            { title: 'Test template 1', content: 'Test 1' },
+            { title: 'Test template 2', content: 'Test 2' }
+        ]
+    });
+</script>
+<script>
+    jQuery(document).ready(function () {
+        var availableTags = [
+            @Html.Raw(ViewBag.UserSuggestion)
+        ];
+
+        jQuery("#ToUserName").autocomplete({
+            source: availableTags
+        });
+    });
+</script>

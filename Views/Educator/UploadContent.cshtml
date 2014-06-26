@@ -1,0 +1,158 @@
+﻿@{
+    ViewBag.Title = "Upload Content";
+}
+<link rel="stylesheet" href="~/Scripts/skins/lightgray/jquery-ui-1.10.4.custom.min.css" />
+<script src="~/Scripts/jquery-ui-1.10.4.custom.min.js"></script>
+
+<div class="container">
+
+    <div class="row" style="margin-top: 35px;">
+        <div class="col-md-3">
+
+            <div class="list-group">
+                <span class="list-group-item list-group-title">
+                    Menu
+                </span>
+                <a href="/Educator" class="list-group-item"><span class="glyphicon glyphicon-home"></span>&nbsp;&nbsp;Dashboard</a>
+                <a href="/Educator/WriteAnArticle" class="list-group-item"><span class="glyphicon glyphicon-pencil"></span>&nbsp;&nbsp;Write an Article</a>
+                <a href="/Educator/UploadContent" class="list-group-item active"><span class="glyphicon glyphicon-upload"></span>&nbsp;&nbsp;Upload Content</a>
+                <a href="/Educator/Items" class="list-group-item"><span class="glyphicon glyphicon-th-list"></span>&nbsp;&nbsp;My Items</a>
+                <a href="/Educator/Discussions" class="list-group-item"><span class="glyphicon glyphicon-bullhorn"></span>&nbsp;&nbsp;Discussions</a>
+                <a href="/Educator/TextChat" class="list-group-item"><span class="glyphicon glyphicon-font"></span>&nbsp;&nbsp;Text Chat</a>
+                <a href="/Educator/VideoConference" class="list-group-item"><span class="glyphicon glyphicon-facetime-video"></span>&nbsp;&nbsp;Video Conference</a>
+                <a href="/Educator/DesktopSharing" class="list-group-item"><span class="glyphicon glyphicon-film"></span>&nbsp;&nbsp;Desktop Sharing</a>
+                <a href="/Educator/ProfileSetting" class="list-group-item"><span class="glyphicon glyphicon-cog"></span>&nbsp;&nbsp;Settings</a>
+                <a href="/Educator/Revenue" class="list-group-item"><span class="glyphicon glyphicon-usd"></span>&nbsp;&nbsp;Revenue</a>
+                <a href="/Educator/Inbox" class="list-group-item">
+                    <span class="glyphicon glyphicon-envelope"></span>&nbsp;&nbsp;<span>
+                        Message&nbsp; @if (ViewBag.UnreadMessage != 0)
+                        {<span id="unreadMessageCount" class="badge">@ViewBag.UnreadMessage</span>}
+                    </span>
+                </a>
+            </div>
+        </div>
+        <div class="col-md-9">
+            <div class="panel panel-default panel-items">
+                <div class="panel-heading">
+                    <h3 class="panel-title"> Upload Content</h3>
+                </div>
+                <div class="panel-body">
+                    <form class="form-horizontal" method="post" action="/Educator/UploadContent" enctype="multipart/form-data" onsubmit="SavePrice()">
+                        <fieldset>
+
+                            <!-- Text input-->
+                            <div class="form-group">
+                                <label class="col-md-4 control-label" for="title">Title</label>
+                                <div class="col-md-4">
+                                    <input id="title" name="title" type="text" placeholder="Enter title here..." class="form-control input-md" required>
+                                </div>
+                            </div>
+
+                            <!-- Text input-->
+                            <div class="form-group">
+                                <label class="col-md-4 control-label" for="Tags">Tags</label>
+                                <div class="col-md-8">
+                                    <input type="text" class="tags form-control" name="Category" data-role="tagsinput" placeholder="Write Tags" style="margin-top:10px;" />
+                                </div>
+                            </div>
+
+                            <!-- File Button -->
+                            <div class="form-group">
+                                <label class="col-md-4 control-label" for="video">Choose Content</label>
+                                <div class="col-md-8">
+                                    @*<input id="filename" name="filename" aria-dropeffect="copy" aria-multiselectable="false" class="input-file" type="file">*@
+                                    <div class="fileinput fileinput-new" data-provides="fileinput">
+                                        <span class="btn btn-default btn-file"><span class="fileinput-new">Select file</span><span class="fileinput-exists">Change</span><input type="file" name="filename"></span>
+                                        <span class="fileinput-filename"></span>
+                                        <a href="#" class="close fileinput-exists" data-dismiss="fileinput" style="float: none">&times;</a>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-md-4 control-label" for="Price">Price</label>
+                                <div class="col-md-2">
+                                    <input id="costHolder" class="form-control" type="number" min="0" max="99999.99">
+                                    <input id="cost" name="cost" type="hidden" value="0">
+                                </div>
+                                <div class="col-md-2" style="margin-top:4px">
+                                    <input type="checkbox" onchange="FreeCheckboxClicked(this)"> <span>Free</span>
+                                </div>
+                            </div>
+
+                            <!-- Textarea -->
+                            <div class="form-group">
+                                <label class="col-md-4 control-label" for="description">Description</label>
+                                <div class="col-md-4">
+                                    <textarea required="" class="form-control" id="content" name="content" style="width:100%; height:100px;"></textarea>
+                                </div>
+                            </div>
+
+                            <!-- Button -->
+                            <div class="form-group">
+                                <label class="col-md-4 control-label" for="submit"></label>
+                                <div class="col-md-4">
+                                    <button id="submit" name="submit" class="btn btn-primary">Upload Content</button>
+                                </div>
+                            </div>
+
+                        </fieldset>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div><!-- /.container -->
+<!-- Bootstrap core JavaScript
+================================================== -->
+<script type="text/javascript" src="~/Scripts/tinymce.min.js"></script>
+<script type="text/javascript" src="~/Scripts/autocomplete.js"></script>
+<script type="text/javascript" src="~/Scripts/bootstrap-tagsinput.min.js"></script>
+
+<!-- javascript
+================================================== -->
+@*<script src="assets/js/highcharts.js"></script>
+    <script src="assets/js/exporting.js"></script>*@
+<script type="text/javascript">
+    function FreeCheckboxClicked(checkbox) {
+        if (checkbox.checked) {
+            document.getElementById("costHolder").disabled = true;
+        } else {
+            document.getElementById("costHolder").disabled = false;
+        }
+    }
+
+    function SavePrice() {
+
+        if (document.getElementById("freecheckbox") != null && document.getElementById("freecheckbox").checked) {
+
+        }
+        else {
+            var costHolder = document.getElementById("costHolder").value;
+
+            if (costHolder.toString() != "") {
+                document.getElementById("cost").value = costHolder;
+            }
+        }
+    }
+</script>
+
+<script>
+    jQuery(document).ready(function () {
+        var availableTags = [
+            @Html.Raw(ViewBag.TagSuggestion)
+        ];
+
+        jQuery("#tags").autocomplete({
+            source: availableTags
+        });
+
+        $("#tags").blur(function () {
+            var e = jQuery.Event("keydown");
+            e.which = 13; // Enter
+            $("#tags").trigger(e);
+        });
+    });
+</script>

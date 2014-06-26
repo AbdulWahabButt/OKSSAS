@@ -1,0 +1,124 @@
+﻿@{
+    ViewBag.Title = "Video Conference";
+}
+
+
+<div class="container">
+
+    <div class="row" style="margin-top: 35px;">
+
+        <div class="col-md-3">
+
+            <div class="list-group">
+                <span class="list-group-item list-group-title">
+                    Menu
+                </span>
+                <a href="/Learner" class="list-group-item"><span class="glyphicon glyphicon-home"></span>&nbsp;&nbsp;Dashboard</a>
+                <a href="/Learner/EducatorSubscription" class="list-group-item"><span class="glyphicon glyphicon-thumbs-up"></span>&nbsp;&nbsp;Educator Subscription</a>
+                <a href="/Learner/FavoriteList" class="list-group-item"><span class="glyphicon glyphicon-list-alt"></span>&nbsp;&nbsp;Favorite List</a>
+                <a href="/Learner/Discussions" class="list-group-item"><span class="glyphicon glyphicon-bullhorn"></span>&nbsp;&nbsp;Discussions</a>
+                <a href="/Learner/TextChat" class="list-group-item"><span class="glyphicon glyphicon-font"></span>&nbsp;&nbsp;Text Chat</a>
+                <a href="/Learner/VideoConference" class="list-group-item active"><span class="glyphicon glyphicon-facetime-video"></span>&nbsp;&nbsp;Video Conference</a>
+                <a href="/Learner/DesktopSharing" class="list-group-item"><span class="glyphicon glyphicon-film"></span>&nbsp;&nbsp;Desktop Sharing</a>
+                <a href="/Learner/ProfileSetting" class="list-group-item"><span class="glyphicon glyphicon-cog"></span>&nbsp;&nbsp;Settings</a>
+                <a href="/Learner/Inbox" class="list-group-item">
+                    <span class="glyphicon glyphicon-envelope"></span>&nbsp;&nbsp;<span>
+                        Message&nbsp; @if (ViewBag.UnreadMessage != 0)
+                        {<span id="unreadMessageCount" class="badge">@ViewBag.UnreadMessage</span>}
+                    </span>
+                </a>
+            </div>
+        </div>
+        <div class="col-md-9">
+            <div class="panel panel-default panel-chat">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Video Conference</h3>
+                </div>
+                <div class="panel-body">
+                    <form class="form-horizontal">
+                        <fieldset>
+
+                            <!-- Text input-->
+                            <div class="form-group">
+                                <label class="col-md-4 control-label" for="title">Conference Code</label>
+                                <div class="col-md-4">
+                                    <input id="conference_code" name="conference_code" type="text" placeholder="Enter conference code here..." class="form-control input-md" required="" value="@ViewBag.ConferenceCode" disabled>
+
+                                </div>
+                            </div>
+
+                            <!-- Button -->
+                            <div class="form-group">
+                                <label class="col-md-4 control-label" for="submit"></label>
+                                <div class="col-md-4">
+                                    <button id="submit" name="submit" class="btn btn-primary">Join Conference</button>
+                                </div>
+                            </div>
+
+                        </fieldset>
+                    </form>
+                   
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+
+</div><!-- /.container -->
+<!-- Bootstrap core JavaScript
+================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+@*<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+<script src="assets/js/bootstrap.min.js"></script>*@
+<!-- javascript
+================================================== -->
+
+@*<script src="assets/js/highcharts.js"></script>
+<script src="assets/js/exporting.js"></script>*@
+
+<script>
+    $(function () {
+        $('#container').highcharts({
+            title: {
+                text: 'Total Traffic To Your Items',
+                x: -20 //center
+            },
+            subtitle: {
+                text: '',
+                x: -20
+            },
+            xAxis: {
+                categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+                    'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+            },
+            yAxis: {
+                title: {
+                    text: 'Traffic'
+                },
+                plotLines: [{
+                    value: 0,
+                    width: 1,
+                    color: '#808080'
+                }]
+            },
+            tooltip: {
+                valueSuffix: 'hits'
+            },
+            legend: {
+                layout: 'vertical',
+                align: 'right',
+                verticalAlign: 'middle',
+                borderWidth: 0
+            },
+            series: [{
+                name: 'Visitors',
+                data: [7.0, 6.9, 9.5, 14.5, 18.2, 21.5, 25.2, 26.5, 23.3, 18.3, 13.9, 9.6]
+            }, {
+                name: 'Unique Visitors',
+                data: [-0.2, 0.8, 5.7, 11.3, 17.0, 22.0, 24.8, 24.1, 20.1, 14.1, 8.6, 2.5]
+            }]
+        });
+    });
+
+</script>

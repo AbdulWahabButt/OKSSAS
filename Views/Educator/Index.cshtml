@@ -1,0 +1,219 @@
+﻿@{
+    ViewBag.Title = "Index";
+}
+
+<div class="container">
+
+    <div class="row" style="margin-top: 35px;">
+
+        <div class="col-md-3">
+            <img data-src="holder.js/200x200" class="img-thumbnail" alt="200x200" src="@ViewBag.User.ProfilePic" style="width: 100%; height: auto;">
+
+
+            <div class="list-group" style="margin-top: 10px;">
+                <span class="list-group-item list-group-title">
+                    Menu
+                </span>
+                <a href="/Educator" class="list-group-item active"><span class="glyphicon glyphicon-home"></span>&nbsp;&nbsp;Dashboard</a>
+                <a href="/Educator/WriteAnArticle" class="list-group-item"><span class="glyphicon glyphicon-pencil"></span>&nbsp;&nbsp;Write an Article</a>
+                <a href="/Educator/UploadContent" class="list-group-item"><span class="glyphicon glyphicon-upload"></span>&nbsp;&nbsp;Upload Content</a>
+                <a href="/Educator/Items" class="list-group-item"><span class="glyphicon glyphicon-th-list"></span>&nbsp;&nbsp;My Items</a>
+                <a href="/Educator/Discussions" class="list-group-item"><span class="glyphicon glyphicon-bullhorn"></span>&nbsp;&nbsp;Discussions</a>
+                <a href="/Educator/TextChat" class="list-group-item"><span class="glyphicon glyphicon-font"></span>&nbsp;&nbsp;Text Chat</a>
+                <a href="/Educator/VideoConference" class="list-group-item"><span class="glyphicon glyphicon-facetime-video"></span>&nbsp;&nbsp;Video Conference</a>
+                <a href="/Educator/DesktopSharing" class="list-group-item"><span class="glyphicon glyphicon-film"></span>&nbsp;&nbsp;Desktop Sharing</a>
+                <a href="/Educator/ProfileSetting" class="list-group-item"><span class="glyphicon glyphicon-cog"></span>&nbsp;&nbsp;Settings</a>
+                <a href="/Educator/Revenue" class="list-group-item"><span class="glyphicon glyphicon-usd"></span>&nbsp;&nbsp;Revenue</a>
+                <a href="/Educator/Inbox" class="list-group-item">
+                    <span class="glyphicon glyphicon-envelope"></span>&nbsp;&nbsp;<span>
+                        Message&nbsp; @if (ViewBag.UnreadMessage != 0)
+                        {<span id="unreadMessageCount" class="badge">@ViewBag.UnreadMessage</span>}
+                    </span>
+                </a>
+            </div>
+
+        </div>
+
+        <div class="col-md-9">
+            <div class="panel panel-default panel-message">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Notifications</h3>
+                </div>
+                <div class="panel-body">
+
+                    @*<p><span class="glyphicon glyphicon-time col-md-1 text-right"></span><span class="col-md-11">Waleed Baig requests to you to have an appointment with him.</span></p>*@
+                    @if (ViewBag.MessageSenderCount != 0)
+                    {
+                        foreach (var list in ViewBag.MessageSender)
+                        {
+                            <div class="media-body">
+                                <p id="messageSender-@list.Message_Id"><span class="glyphicon glyphicon-envelope col-md-1 text-right"></span><span class="col-md-11">@list.FromUserName sends you a <a href="#" class="modal_show_is_here">message</a> at @list.MessageDate.</span></p>
+                                <div class="modal_body_is_here" style="display:none;">@Html.Raw(list.Body)</div>
+                                <div class="modal_title_is_here" style="display:none;">@list.Title</div>
+                                <div class="modal_to_user_name_is_here" style="display:none;">@list.ToUserName</div>
+                                <div class="modal_from_user_name_is_here" style="display:none;">@list.FromUserName</div>
+                                <div class="modal_message_id_is_here" style="display:none;">@list.Message_Id</div>
+                                <div id="messageRead-@list.Message_Id" style="display:none;">@Convert.ToBoolean(list.MessageRead)</div>
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <p>No Message to Display</p>
+                    }
+
+                </div>
+            </div>
+
+            <div class="panel panel-default panel-profile">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Your Stats</h3>
+                </div>
+                <div class="panel-body">
+                    <div id="container" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div id="modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div id="modalContent" class="modal-content">
+            <div id="modalHeader" class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <div class="modal-title">
+                    <h4 id="myModalLabel">Modal title</h4>
+                    <h5>Data</h5>
+                </div>
+            </div>
+            <div id="modalBody" class="modal-body">
+                ...
+            </div>
+            <div id="modalFooter" class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- /.container -->
+<!-- Bootstrap core JavaScript
+    ================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+@*<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>*@
+@*<script src="~/Scripts/jquery-1.11.0.min.js"></script>
+    @*<script src="~/Scripts/bootstrap.min.js"></script>
+    <!-- javascript
+    ================================================== -->
+    <script src="~/Scripts/highcharts.js"></script>
+    <script src="~/Scripts/exporting.js"></script>
+*@
+<script>
+
+    jQuery(document).ready(function ($) {
+        jQuery(document).on('click', '.modal_show_is_here', function () {
+            var modal = jQuery(this).closest('.media-body');
+            var title = modal.find('.modal_title_is_here').html();
+            var body = modal.find('.modal_body_is_here').html();
+            var to_username = modal.find('.modal_to_user_name_is_here').html();
+            var from_username = modal.find('.modal_from_user_name_is_here').html();
+            var message_id = modal.find('.modal_message_id_is_here').html();
+            var message_id = modal.find('.modal_message_id_is_here').html();
+            //var message_read = modal.find('#messageRead-' + message_id).html().toString();
+
+            $('#modalHeader').remove();
+            $('#modalBody').remove();
+            $('#modalFooter').remove();
+
+            $('#modalContent').append('<div id="modalHeader" class="modal-header"></div>');
+            $('#modalContent').append('<div id="modalBody" class="modal-body" style="margin-left: 10px">' + body + '</div>');
+            $('#modalContent').append('<div id="modalFooter" class="modal-footer"></div>');
+
+            ////Modal Header
+            $('#modalHeader').append('<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>');
+            $('#modalHeader').append('<h4 class="modal-title" id="myModalLabel">' + title + '</h4>');
+
+            $('#modalFooter').append('<button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>');
+            $('#modalFooter').append('<a class="btn btn-primary" href="/Educator/ComposeMessage?fromUserName=' + from_username + '">Reply</a>');
+            $('#modalFooter').append('<a class="btn btn-danger" href="/Educator/DeleteMessage?messageId=' + message_id + '">Delete</a>');
+
+            $('#modal').modal('show');
+
+            MarkMessageAsRead(message_id.toString());
+        });
+    });
+
+    function MarkMessageAsRead(message_id) {
+        $.getJSON("/Educator/MarkMessageAsRead?messageId=" + message_id, function (data) {
+
+            if (data >= 0) {
+                if (data == 0) {
+                    $('#unreadMessageCount').hide()
+                    $('#messageSender-' + message_id).html("No Message to Display")
+                }
+                else {
+                    $('#unreadMessageCount').html(data)
+                    $('#messageSender-' + message_id).hide();
+                }
+            }
+            else {
+                alert("Error: Message does not marked as read.");
+            }
+        });
+    }
+
+    $(function () {
+        $('#container').highcharts({
+            title: {
+                text: 'Your Total Publishings',
+                x: -20 //center
+            },
+            subtitle: {
+                text: 'on monthly basis',
+                x: -20
+            },
+            xAxis: {
+                title: {
+                    text: 'This Year'
+                },
+                categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+                    'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+            },
+            yAxis: {
+                title: {
+                    text: 'Number of publishings'
+                },
+                plotLines: [{
+                    value: 0,
+                    width: 1,
+                    color: '#808080'
+                }]
+            },
+            tooltip: {
+                valueSuffix: ''
+            },
+            legend: {
+                layout: 'vertical',
+                align: 'right',
+                verticalAlign: 'middle',
+                borderWidth: 0
+            },
+            series: [{
+                name: 'Publishings',
+                data: [@Html.Raw(ViewBag.TotalItem)]
+            }
+            ,
+            {
+                name: 'Recieved Messages',
+                data: [@Html.Raw(ViewBag.TotalMsg)]
+            }
+            ]
+        });
+    });
+
+
+</script>

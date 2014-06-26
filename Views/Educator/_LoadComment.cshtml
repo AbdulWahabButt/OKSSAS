@@ -1,0 +1,47 @@
+﻿@{
+    Layout = null;
+}
+
+@foreach (var list in ViewBag.CommentList)
+{
+    @*<div class="media">
+            <a class="pull-left" href="#">
+                <img class="media-object" data-src="holder.js/64x64" alt="64x64" src="@list.ProfilePic" style="width: 16px; height: 16px;">
+            </a>
+            <div class="media-body">
+                <h3 class="media-heading" style="">@list.UserName</h3>
+                <div class="form-group">
+                <div class="col-md-4" style="width: 100%;">
+                    <p>@list.Body</p>
+                </div>
+                </div>
+            </div>
+        </div>*@
+
+    <div class="media">
+        <a class="pull-left" href="#">
+            <img class="media-object" data-src="holder.js/64x64" alt="64x64" src="@list.ProfilePic" style="width: 64px; height: 64px;">
+        </a>
+        <div class="media-body">
+            <h4 class="media-heading">@list.UserName</h4>
+            @Html.Raw(list.Body)
+        </div>
+    </div>
+    <hr>
+}
+
+<div id="lastdiv" class="media">
+    <a class="pull-left" href="#">
+        <img class="media-object" data-src="holder.js/64x64" alt="64x64" src="@ViewBag.User.ProfilePic" style="width: 16px; height: 16px;">
+    </a>
+    <div class="media-body">
+        <p class="media-heading" style="">@ViewBag.User.UserName</p>
+        <div class="form-group">
+            <div class="col-md-4" style="width: 100%;">
+                <textarea class="form-control" id="WriteComment" name="WriteComment"></textarea>
+                <input type="button" class="btn btn-default" style="margin-top:10px" onclick="SaveComment('@ViewBag.Item.Item_Id', '@ViewBag.User.Id', '@ViewBag.User.UserName')" value="Send" />
+            </div>
+        </div>
+    </div>
+</div>
+<hr />

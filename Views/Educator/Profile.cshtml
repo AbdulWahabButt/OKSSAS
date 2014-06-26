@@ -1,0 +1,177 @@
+﻿@{
+    ViewBag.Title = "Profile";
+}
+
+<div class="container">
+
+    <div class="row" style="margin-top: 35px;">
+
+        <div class="col-md-3">
+
+            <div class="list-group">
+                <span class="list-group-item list-group-title">
+                    Menu
+                </span>
+                <a href="/Educator" class="list-group-item"><span class="glyphicon glyphicon-home"></span>&nbsp;&nbsp;Dashboard</a>
+                <a href="/Educator/WriteAnArticle" class="list-group-item"><span class="glyphicon glyphicon-pencil"></span>&nbsp;&nbsp;Write an Article</a>
+                <a href="/Educator/UploadContent" class="list-group-item"><span class="glyphicon glyphicon-upload"></span>&nbsp;&nbsp;Upload Content</a>
+                <a href="/Educator/Items" class="list-group-item"><span class="glyphicon glyphicon-th-list"></span>&nbsp;&nbsp;My Items</a>
+                <a href="/Educator/Discussions" class="list-group-item"><span class="glyphicon glyphicon-bullhorn"></span>&nbsp;&nbsp;Discussions</a>
+                <a href="/Educator/TextChat" class="list-group-item"><span class="glyphicon glyphicon-font"></span>&nbsp;&nbsp;Text Chat</a>
+                <a href="/Educator/VideoConference" class="list-group-item"><span class="glyphicon glyphicon-facetime-video"></span>&nbsp;&nbsp;Video Conference</a>
+                <a href="/Educator/DesktopSharing" class="list-group-item"><span class="glyphicon glyphicon-film"></span>&nbsp;&nbsp;Desktop Sharing</a>
+                <a href="/Educator/ProfileSetting" class="list-group-item active"><span class="glyphicon glyphicon-cog"></span>&nbsp;&nbsp;Settings</a>
+                <a href="/Educator/Revenue" class="list-group-item"><span class="glyphicon glyphicon-usd"></span>&nbsp;&nbsp;Revenue</a>
+                <a href="/Educator/Inbox" class="list-group-item">
+                    <span class="glyphicon glyphicon-envelope"></span>&nbsp;&nbsp;<span>
+                        Message&nbsp; @if (ViewBag.UnreadMessage != 0)
+                        {<span id="unreadMessageCount" class="badge">@ViewBag.UnreadMessage</span>}
+                    </span>
+                </a>
+            </div>
+        </div>
+        <div class="col-md-9">
+            <div class="panel panel-default panel-profile">
+                <div class="panel-heading">
+                    <h3 class="panel-title"> Account Info</h3>
+                </div>
+                <div class="panel-body">
+
+                    @*@using (Html.BeginForm("EditProfile", "Account", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+                    {*@
+                        <fieldset>
+
+                            <div class="col-md-9">
+
+                                @if (ViewBag.User.Introduction != null && !ViewBag.User.Introduction.Equals(""))
+                                {
+                                    <dl class="dl-horizontal">
+                                        <dt>Introduction</dt>
+                                        <dd>@ViewBag.User.Introduction</dd>
+                                    </dl>
+                                }
+
+
+                                @*@if ((ViewBag.User.CollegeName != null && !ViewBag.User.CollegeName.Equals(""))
+                                    || (ViewBag.User.CollegeCourses != null && !ViewBag.User.CollegeCourses.Equals(""))
+                                    || (ViewBag.User.SchoolName != null && !ViewBag.User.SchoolName.Equals(""))
+                                    || (ViewBag.User.SchoolCourses != null && !ViewBag.User.SchoolCourses.Equals("")))
+                                {*@
+                                    <hr />
+                                    <h3>Education</h3>
+
+                                    <dl class="dl-horizontal">
+                                        <dt>College Name</dt>
+                                        <dd>@ViewBag.User.CollegeName</dd>
+                                    </dl>
+
+                                    <dl class="dl-horizontal">
+                                        <dt>College Courses</dt>
+                                        <dd>@ViewBag.User.CollegeCourses</dd>
+                                    </dl>
+
+                                    <dl class="dl-horizontal">
+                                        <dt>School Name</dt>
+                                        <dd>@ViewBag.User.SchoolName</dd>
+                                    </dl>
+
+                                    <dl class="dl-horizontal">
+                                        <dt>School Courses</dt>
+                                        <dd>@ViewBag.User.SchoolCourses</dd>
+                                    </dl>
+                                @*}*@
+
+                                @if ((ViewBag.User.Occupation != null && !ViewBag.User.Occupation.Equals(""))
+                                    || (ViewBag.User.Skills != null && !ViewBag.User.Skills.Equals(""))
+                                    || (ViewBag.User.Employment != null && !ViewBag.User.Employment.Equals("")))
+                                {
+                                    <hr />
+                                    <h3>Work</h3>
+
+                                    <dl class="dl-horizontal">
+                                        <dt>Occupation</dt>
+                                        <dd>@ViewBag.User.Occupation</dd>
+                                    </dl>
+
+                                    <dl class="dl-horizontal">
+                                        <dt>Skills</dt>
+                                        <dd>@ViewBag.User.Skills</dd>
+                                    </dl>
+
+                                    <dl class="dl-horizontal">
+                                        <dt>Employment</dt>
+                                        <dd>@ViewBag.User.Employment</dd>
+                                    </dl>
+                                }
+
+                                @if ((ViewBag.User.Gender != null && !ViewBag.User.Gender.Equals(""))
+                                    || (ViewBag.User.BirthDate != null && !ViewBag.User.BirthDate.Equals("")))
+                                {
+                                    <hr />
+                                    <h3>Basic Information</h3>
+
+                                    <dl class="dl-horizontal">
+                                        <dt>Gender</dt>
+                                        <dd>@ViewBag.User.Gender</dd>
+
+                                    </dl><dl class="dl-horizontal">
+                                        <dt>BirthDate</dt>
+                                             @{
+                                    DateTime birthDate = ViewBag.User.BirthDate;
+                                         <dd>@birthDate.ToString("MM/dd/yyyy")</dd>
+                                             }
+                                        @*<dd>@ViewBag.User.BirthDate</dd>*@
+                                    </dl>
+                                }
+
+                                @if ((ViewBag.User.HomeContact != null && !ViewBag.User.HomeContact.Equals(""))
+                                    || (ViewBag.User.WorkContact != null && !ViewBag.User.WorkContact.Equals("")))
+                                {
+                                    <hr />
+                                    <h3>Contact Information</h3>
+
+                                    <dl class="dl-horizontal">
+                                        <dt>Home</dt>
+                                        <dd>@ViewBag.User.HomeContact</dd>
+                                    </dl>
+
+                                    <dl class="dl-horizontal">
+                                        <dt>Work</dt>
+                                        <dd>@ViewBag.User.WorkContact</dd>
+                                    </dl>
+                                }
+
+                            </div>
+
+                            <div class="col-md-3">
+                                <img data-src="holder.js/200x200" class="img-thumbnail" alt="200x200" src="@ViewBag.User.ProfilePic" style="width: 100%; height: auto;">
+                            </div>
+
+                        </fieldset>
+
+                        <div class="col-md-offset-6 col-md-6" style="margin-top:10px">
+                            <a href="/Educator/EditProfile" class="btn btn-primary">&nbsp;&nbsp;Edit&nbsp;&nbsp;</a>
+                        </div>
+                    @*}*@
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+
+</div><!-- /.container -->
+<!-- Bootstrap core JavaScript
+================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+@*<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+    <script src="assets/js/bootstrap.min.js"></script>*@
+<!-- javascript
+================================================== -->
+@*<script src="assets/js/highcharts.js"></script>
+    <script src="assets/js/exporting.js"></script>*@
+
+<script>
+
+</script>

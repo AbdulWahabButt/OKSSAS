@@ -1,0 +1,46 @@
+﻿@{
+    Layout = null;
+}
+
+
+@if (ViewBag.EducatorCount == 0)
+{
+    <p class="alert-message">There is no Content that matched your search</p>
+}
+else
+{
+    foreach (var list in ViewBag.Educator)
+    {
+        @*<div class="media" style="margin-top:15px; margin-bottom:15px">
+                <a class="pull-left" href="#">
+                    <img class="media-object" data-src="holder.js/64x64" alt="64x64" src="@list.ProfilePic" style="width: 64px; height: 64px;">
+                </a>
+                <div class="media-body">
+                    <h4 class="media-heading"><a href="/Learner/ViewEducator?username=@list.UserName">@list.UserName</a></h4>
+                    <br /><small><a id="subscribeLink+@list.Id" href="#" onclick="SubscribeEducator('@list.Id')">Subscribe Educator</a></small>
+                </div>
+            </div>*@
+
+        <div class="col-sm-6 col-md-4" style="margin-bottom:5px; margin-top:5px">
+            <div class="thumbnail">
+                <a class="pull-left" href="#" style="margin-bottom:10px">
+                    <img class="media-object" data-src="holder.js/64x64" alt="64x64" src="@list.ProfilePic" style="width: 130px; height: 130px;">
+                </a>
+                <div class="caption">
+                    <h4 class="media-heading"><a href="/Learner/ViewEducator?educatorId=@list.Id">@list.UserName</a></h4>
+                    <p>@list.Introduction</p>
+                    @if (!list.IsUserSubscribed)
+                    {
+                        <p><a class="btn btn-primary" id="subscribeLink-@list.Id" href="#" onclick="SubscribeEducator('@list.Id')">Subscribe</a></p>
+                        <p><a class="btn btn-success" id="unsubscribeLink-@list.Id" href="#" onclick="UnsubscribeEducator('@list.Id')" style="display:none">Unsubscribe</a></p>
+                    }
+                    else
+                    {
+                        <p><a class="btn btn-primary" id="subscribeLink-@list.Id" href="#" onclick="SubscribeEducator('@list.Id')" style="display:none">Subscribe</a></p>
+                        <p><a class="btn btn-success" id="unsubscribeLink-@list.Id" href="#" onclick="UnsubscribeEducator('@list.Id')">Unsubscribe</a></p>
+                    }
+                </div>
+            </div>
+        </div>
+    }
+}

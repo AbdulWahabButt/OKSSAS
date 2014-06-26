@@ -1,0 +1,32 @@
+﻿@{
+    Layout = null;
+}
+
+@if (ViewBag.MessageCount == 0)
+{
+    <p class="alert-message">There is no Content to Display</p>
+}
+else
+{
+    foreach (var list in ViewBag.Message)
+    {
+        <div class="media">
+            <a class="pull-left" href="#">
+                <img class="media-object" data-src="holder.js/64x64" alt="64x64" src="@list.ProfilePic" style="width: 64px; height: 64px;">
+            </a>
+            <div class="media-body">
+                <h4 class="media-heading"><a href="#" class="modal_show_is_here">@list.Title</a></h4> <strong>To:</strong> @list.ToUserName
+                <div class="modal_body_is_here" style="display:none;">@Html.Raw(list.Body)</div>
+                <div class="modal_title_is_here" style="display:none;">@list.Title</div>
+                <div class="modal_to_user_name_is_here" style="display:none;">@list.ToUserName</div>
+                <div class="modal_from_user_name_is_here" style="display:none;">@list.FromUserName</div>
+                <div class="modal_message_id_is_here" style="display:none;">@list.Message_Id</div>
+
+
+                <input type="hidden" id="body+@list.Message_Id" value="@list.Body" />
+                <br /><small style="margin-right:10px"><a href="#" onclick="DeleteMessage('@list.Message_Id')">Delete</a></small>
+                @*<br /><small><a href="/Admin/EditMessage?MessageId=@list.Message_Id">Edit</a></small>&nbsp;&nbsp;<small><a href="/Admin/DeleteMessage?MessageId=@list.Message_Id">Delete</a></small>*@
+            </div>
+        </div>
+    }
+}

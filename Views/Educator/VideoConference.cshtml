@@ -1,0 +1,329 @@
+﻿@{
+    ViewBag.Title = "Video Conference";
+}
+
+<script src="~/Scripts/firebase.js"></script>
+<script src="~/Scripts/RTCPeerConnection-v1.5.js"></script>
+<script src="~/Scripts/conference.js"></script>
+<script src="~/Scripts/getMediaElement.min.js"></script>
+<link rel="stylesheet" href="~/Scripts/skins/lightgray/jquery-ui-1.10.4.custom.min.css" />
+<script src="~/Scripts/jquery-ui-1.10.4.custom.min.js"></script>
+
+<div class="container">
+
+    <div class="row" style="margin-top: 35px;">
+
+        <div class="col-md-3">
+
+            <div class="list-group">
+                <span class="list-group-item list-group-title">
+                    Menu
+                </span>
+                <a href="/Educator" class="list-group-item"><span class="glyphicon glyphicon-home"></span>&nbsp;&nbsp;Dashboard</a>
+                <a href="/Educator/WriteAnArticle" class="list-group-item"><span class="glyphicon glyphicon-pencil"></span>&nbsp;&nbsp;Write an Article</a>
+                <a href="/Educator/UploadContent" class="list-group-item"><span class="glyphicon glyphicon-upload"></span>&nbsp;&nbsp;Upload Content</a>
+                <a href="/Educator/Items" class="list-group-item"><span class="glyphicon glyphicon-th-list"></span>&nbsp;&nbsp;My Items</a>
+                <a href="/Educator/Discussions" class="list-group-item"><span class="glyphicon glyphicon-bullhorn"></span>&nbsp;&nbsp;Discussions</a>
+                <a href="/Educator/TextChat" class="list-group-item"><span class="glyphicon glyphicon-font"></span>&nbsp;&nbsp;Text Chat</a>
+                <a href="/Educator/VideoConference" class="list-group-item active"><span class="glyphicon glyphicon-facetime-video"></span>&nbsp;&nbsp;Video Conference</a>
+                <a href="/Educator/DesktopSharing" class="list-group-item"><span class="glyphicon glyphicon-film"></span>&nbsp;&nbsp;Desktop Sharing</a>
+                <a href="/Educator/ProfileSetting" class="list-group-item"><span class="glyphicon glyphicon-cog"></span>&nbsp;&nbsp;Settings</a>
+                <a href="/Educator/Revenue" class="list-group-item"><span class="glyphicon glyphicon-usd"></span>&nbsp;&nbsp;Revenue</a>
+                <a href="/Educator/Inbox" class="list-group-item">
+                    <span class="glyphicon glyphicon-envelope"></span>&nbsp;&nbsp;<span>
+                        Message&nbsp; @if (ViewBag.UnreadMessage != 0)
+                        {<span id="unreadMessageCount" class="badge">@ViewBag.UnreadMessage</span>}
+                    </span>
+                </a>
+            </div>
+        </div>
+        <div class="col-md-9">
+            <div class="panel panel-default panel-chat">
+                <div class="panel-heading">
+                    <h3 class="panel-title"> Video Conference</h3>
+                </div>
+                <div class="panel-body">
+                    <form class="form-horizontal">
+                        <fieldset>
+
+                            <!-- Text input-->
+                            @*<div class="form-group">
+                                    <label class="col-md-4 control-label" for="title">Conference Code</label>
+                                    <div class="col-md-4">
+                                        <input id="conference-name" name="conference_code" type="text" placeholder="Enter conference code here..." class="form-control input-md" required="">
+                                    </div>
+                                    <div>
+                                        <code><strong id="unique-token">#8YOEQG49-R13V7VI</strong></code>
+                                    </div>
+                                </div>*@
+
+                            <strong id="unique-token" style="display:none">#8YOEQG49-R13V7VI</strong>
+
+                            <div class="form-group">
+                                <label class="col-md-4 control-label" for="Tags">Invite Learner</label>
+                                <div class="col-md-8">
+                                    <input id="invitation" type="text" class="tags form-control" name="invitation" data-role="tagsinput" placeholder="Write Username" style="margin-top:10px;" />
+                                </div>
+                            </div>
+
+                            <!-- Button -->
+                            <div class="form-group">
+                                <label class="col-md-4 control-label" for="submit"></label>
+                                <div class="col-md-8">
+                                    <button id="invite" name="invite" class="btn btn-success" onclick="SendInvitation('@ViewBag.User.Id')">Send Invitation</button>&nbsp;&nbsp;
+                                    <button id="setup-new-room" name="submit" class="btn btn-primary">Start Conference</button>
+                                </div>
+                            </div>
+
+                            <!-- Button -->
+                            @*<div class="form-group">
+                                    <label class="col-md-4 control-label" for="submit"></label>
+                                    <div class="col-md-4">
+
+                                    </div>
+                                </div>*@
+
+                        </fieldset>
+                    </form>
+                    <div>
+                        @*<link rel="stylesheet" href="https://www.webrtc-experiment.com/style.css">*@
+
+
+                        <script>
+                            document.createElement('article');
+                            document.createElement('footer');
+                        </script>
+
+                        <article>
+
+                            <!-- just copy this <section> and next script -->
+                            <section class="experiment">
+
+
+                                <!-- list of all available conferencing rooms -->
+                                <table style="width: 100%;" id="rooms-list"></table>
+
+                                <!-- local/remote videos container -->
+                                <div id="videos-container"></div>
+                            </section>
+
+                            <script>
+
+                                var config = {
+                                    openSocket: function (config) {
+                                        var channel = config.channel || location.href.replace(/\/|:|#|%|\.|\[|\]/g, '');
+                                        var socket = new Firebase('https://chat.firebaseIO.com/' + channel);
+                                        socket.channel = channel;
+                                        socket.on("child_added", function (data) {
+                                            config.onmessage && config.onmessage(data.val());
+                                        });
+                                        socket.send = function (data) {
+                                            this.push(data);
+                                        };
+                                        config.onopen && setTimeout(config.onopen, 1);
+                                        socket.onDisconnect().remove();
+                                        return socket;
+                                    },
+                                    onRemoteStream: function (media) {
+                                        var mediaElement = getMediaElement(media.video, {
+                                            width: (videosContainer.clientWidth / 2) - 50,
+                                            buttons: ['mute-audio', 'mute-video', 'full-screen', 'volume-slider']
+                                        });
+                                        mediaElement.id = media.streamid;
+                                        videosContainer.insertBefore(mediaElement, videosContainer.firstChild);
+                                    },
+                                    onRemoteStreamEnded: function (stream, video) {
+                                        if (video.parentNode && video.parentNode.parentNode && video.parentNode.parentNode.parentNode) {
+                                            video.parentNode.parentNode.parentNode.removeChild(video.parentNode.parentNode);
+                                        }
+                                    },
+                                    onRoomFound: function (room) {
+                                        var alreadyExist = document.querySelector('button[data-broadcaster="' + room.broadcaster + '"]');
+                                        if (alreadyExist) return;
+
+                                        if (typeof roomsList === 'undefined') roomsList = document.body;
+
+                                        var tr = document.createElement('tr');
+                                        tr.innerHTML = '<td><strong>' + room.roomName + '</strong> shared a conferencing room with you!</td>' +
+                                            '<td><button class="join">Join</button></td>';
+                                        roomsList.insertBefore(tr, roomsList.firstChild);
+
+                                        var joinRoomButton = tr.querySelector('.join');
+                                        joinRoomButton.setAttribute('data-broadcaster', room.broadcaster);
+                                        joinRoomButton.setAttribute('data-roomToken', room.roomToken);
+                                        joinRoomButton.onclick = function () {
+                                            this.disabled = true;
+
+                                            var broadcaster = this.getAttribute('data-broadcaster');
+                                            var roomToken = this.getAttribute('data-roomToken');
+                                            captureUserMedia(function () {
+                                                conferenceUI.joinRoom({
+                                                    roomToken: roomToken,
+                                                    joinUser: broadcaster
+                                                });
+                                            });
+                                        };
+                                    },
+                                    onRoomClosed: function (room) {
+                                        var joinButton = document.querySelector('button[data-roomToken="' + room.roomToken + '"]');
+                                        if (joinButton) {
+                                            // joinButton.parentNode === <li>
+                                            // joinButton.parentNode.parentNode === <td>
+                                            // joinButton.parentNode.parentNode.parentNode === <tr>
+                                            // joinButton.parentNode.parentNode.parentNode.parentNode === <table>
+                                            joinButton.parentNode.parentNode.parentNode.parentNode.removeChild(joinButton.parentNode.parentNode.parentNode);
+                                        }
+                                    }
+                                };
+
+                                function setupNewRoomButtonClickHandler() {
+                                    btnSetupNewRoom.disabled = true;
+                                    document.getElementById('conference-name').disabled = true;
+                                    captureUserMedia(function () {
+                                        conferenceUI.createRoom({
+                                            roomName: (document.getElementById('conference-name') || {}).value || 'Anonymous'
+                                        });
+                                    });
+                                }
+
+                                function captureUserMedia(callback) {
+                                    var video = document.createElement('video');
+
+                                    getUserMedia({
+                                        video: video,
+                                        onsuccess: function (stream) {
+                                            config.attachStream = stream;
+                                            callback && callback();
+
+                                            video.setAttribute('muted', true);
+
+                                            var mediaElement = getMediaElement(video, {
+                                                width: (videosContainer.clientWidth / 2) - 50,
+                                                buttons: ['mute-audio', 'mute-video', 'full-screen', 'volume-slider']
+                                            });
+                                            mediaElement.toggle('mute-audio');
+                                            videosContainer.insertBefore(mediaElement, videosContainer.firstChild);
+                                        },
+                                        onerror: function () {
+                                            alert('unable to get access to your webcam');
+                                            callback && callback();
+                                        }
+                                    });
+                                }
+
+                                var conferenceUI = conference(config);
+
+                                /* UI specific */
+                                var videosContainer = document.getElementById('videos-container') || document.body;
+                                var btnSetupNewRoom = document.getElementById('setup-new-room');
+                                var roomsList = document.getElementById('rooms-list');
+
+                                if (btnSetupNewRoom) btnSetupNewRoom.onclick = setupNewRoomButtonClickHandler;
+
+                                function rotateVideo(video) {
+                                    video.style[navigator.mozGetUserMedia ? 'transform' : '-webkit-transform'] = 'rotate(0deg)';
+                                    setTimeout(function () {
+                                        video.style[navigator.mozGetUserMedia ? 'transform' : '-webkit-transform'] = 'rotate(360deg)';
+                                    }, 1000);
+                                }
+
+                                (function () {
+                                    var uniqueToken = document.getElementById('unique-token');
+                                    if (uniqueToken)
+                                        if (location.hash.length > 2) uniqueToken.parentNode.parentNode.parentNode.innerHTML = '<h2 style="text-align:center;"><a href="' + location.href + '" target="_blank">Share this link</a></h2>';
+                                        else uniqueToken.innerHTML = uniqueToken.parentNode.parentNode.href = '#' + (Math.random() * new Date().getTime()).toString(36).toUpperCase().replace(/\./g, '-');
+                                })();
+
+                                function scaleVideos() {
+                                    var videos = document.querySelectorAll('video'),
+                                        length = videos.length, video;
+
+                                    var minus = 130;
+                                    var windowHeight = 700;
+                                    var windowWidth = 600;
+                                    var windowAspectRatio = windowWidth / windowHeight;
+                                    var videoAspectRatio = 4 / 3;
+                                    var blockAspectRatio;
+                                    var tempVideoWidth = 0;
+                                    var maxVideoWidth = 0;
+
+                                    for (var i = length; i > 0; i--) {
+                                        blockAspectRatio = i * videoAspectRatio / Math.ceil(length / i);
+                                        if (blockAspectRatio <= windowAspectRatio) {
+                                            tempVideoWidth = videoAspectRatio * windowHeight / Math.ceil(length / i);
+                                        } else {
+                                            tempVideoWidth = windowWidth / i;
+                                        }
+                                        if (tempVideoWidth > maxVideoWidth)
+                                            maxVideoWidth = tempVideoWidth;
+                                    }
+                                    for (var i = 0; i < length; i++) {
+                                        video = videos[i];
+                                        if (video)
+                                            video.width = maxVideoWidth - minus;
+                                    }
+                                }
+
+                                window.onresize = scaleVideos;
+
+                            </script>
+                        </article>
+
+                        <!-- commits.js is useless for you! -->
+                        <script src="https://www.webrtc-experiment.com/commits.js" async> </script>
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+
+</div><!-- /.container -->
+<!-- Bootstrap core JavaScript
+================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+@*<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+    <script src="assets/js/bootstrap.min.js"></script>*@
+<!-- javascript
+================================================== -->
+@*<script src="assets/js/highcharts.js"></script>
+    <script src="assets/js/exporting.js"></script>*@
+
+<script>
+
+    function SendInvitation(userId) {
+
+        var invitedUser = $('#invitation').val();
+        var code = document.getElementById('unique-token').innerText.toString().replace("#", "%20");
+
+        $.getJSON("/Educator/SendInvitation?userId=" + userId + "&invitedUser=" + invitedUser
+            + "&code=" + code, function (data) {
+                if (data) {
+                    Console.log("Successfully sended");
+                }
+                else {
+                    Console.log("Error: Item is not deleted");
+                }
+            });
+    }
+
+    jQuery(document).ready(function () {
+        var availableTags = [
+            @Html.Raw(ViewBag.SubscriberList)
+        ];
+
+        jQuery("#invitation").autocomplete({
+            source: availableTags
+        });
+
+        $("#invitation").blur(function () {
+            var e = jQuery.Event("keydown");
+            e.which = 13; // Enter
+            $("#invitation").trigger(e);
+        });
+    });
+
+</script>

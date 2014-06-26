@@ -1,0 +1,143 @@
+﻿@using Microsoft.AspNet.Identity
+@{
+    ViewBag.Title = "View Discussion";
+}
+
+<div class="container">
+
+    <div class="row" style="margin-top: 35px;">
+
+        <div class="col-md-3">
+            <div class="list-group">
+                <span class="list-group-item list-group-title">
+                    Menu
+                </span>
+                <a href="/Educator" class="list-group-item"><span class="glyphicon glyphicon-home"></span>&nbsp;&nbsp;Dashboard</a>
+                <a href="/Educator/WriteAnArticle" class="list-group-item"><span class="glyphicon glyphicon-pencil"></span>&nbsp;&nbsp;Write an Article</a>
+                <a href="/Educator/UploadContent" class="list-group-item"><span class="glyphicon glyphicon-upload"></span>&nbsp;&nbsp;Upload Content</a>
+                <a href="/Educator/Items" class="list-group-item"><span class="glyphicon glyphicon-th-list"></span>&nbsp;&nbsp;My Items</a>
+                <a href="/Educator/Discussions" class="list-group-item active"><span class="glyphicon glyphicon-bullhorn"></span>&nbsp;&nbsp;Discussions</a>
+                <a href="/Educator/TextChat" class="list-group-item"><span class="glyphicon glyphicon-font"></span>&nbsp;&nbsp;Text Chat</a>
+                <a href="/Educator/VideoConference" class="list-group-item"><span class="glyphicon glyphicon-facetime-video"></span>&nbsp;&nbsp;Video Conference</a>
+                <a href="/Educator/DesktopSharing" class="list-group-item"><span class="glyphicon glyphicon-film"></span>&nbsp;&nbsp;Desktop Sharing</a>
+                <a href="/Educator/ProfileSetting" class="list-group-item"><span class="glyphicon glyphicon-cog"></span>&nbsp;&nbsp;Settings</a>
+                <a href="/Educator/Revenue" class="list-group-item"><span class="glyphicon glyphicon-usd"></span>&nbsp;&nbsp;Revenue</a>
+                <a href="/Educator/Inbox" class="list-group-item">
+                    <span class="glyphicon glyphicon-envelope"></span>&nbsp;&nbsp;<span>
+                        Message&nbsp; @if (ViewBag.UnreadMessage != 0)
+                        {<span id="unreadMessageCount" class="badge">@ViewBag.UnreadMessage</span>}
+                    </span>
+                </a>
+            </div>
+        </div>
+
+        <div class="col-md-9">
+            <div class="panel panel-default panel-discussion">
+                <div class="panel-heading">
+                    <h3 class="panel-title">@ViewBag.Discussion.Title</h3>
+                </div>
+                <div class="panel-body">
+
+                    <div class="col-md-12">
+
+                        <div id="div1" class="col-md-12" style="margin-bottom:30px">
+                            @Html.Raw(@ViewBag.Discussion.Content)
+                        </div>
+                        <hr />
+                        <div class="col-md-offset-7 col-md-5" style="padding-left:40px">
+                            <span style="font-weight:700; font-size:13px">Updated On:</span>&nbsp;&nbsp;<span>@ViewBag.Discussion.PostDate</span><br />
+                        </div>
+                        <div class="col-md-offset-7 col-md-5" style="padding-left:40px">
+                            <span style="font-weight:700; font-size:13px">Written By:</span>&nbsp;&nbsp;<span>@ViewBag.Admin.UserName</span><br />
+                        </div>
+
+                    </div>
+
+                    <div class="col-md-12" style="margin-top:30px">
+                        <span style="font-weight:500; font-size:18px">Comment</span>
+                        <hr>
+
+                        <div id="Comment" class="col-md-12">
+                            @foreach (var list in ViewBag.CommentList)
+                            {
+                                @*<div class="media">
+                                        <a class="pull-left" href="#">
+                                            <img class="media-object" data-src="holder.js/64x64" alt="64x64" src="@list.ProfilePic" style="width: 16px; height: 16px;">
+                                        </a>
+                                        <div class="media-body">
+                                            <h3 class="media-heading" style="">@list.UserName</h3>
+                                            <div class="form-group">
+                                            <div class="col-md-4" style="width: 100%;">
+                                                <p>@list.Body</p>
+                                            </div>
+                                            </div>
+                                        </div>
+                                    </div>*@
+
+                                <div class="media">
+                                    <a class="pull-left" href="#">
+                                        <img class="media-object" data-src="holder.js/64x64" alt="64x64" src="@list.ProfilePic" style="width: 64px; height: 64px;">
+                                    </a>
+                                    <div class="media-body">
+                                        <h4 class="media-heading">@list.UserName</h4>
+                                        @Html.Raw(list.Body)
+                                    </div>
+                                </div>
+                                <hr>
+                            }
+
+                            <div id="lastdiv" class="media">
+                                <a class="pull-left" href="#">
+                                    <img class="media-object" data-src="holder.js/64x64" alt="64x64" src="@ViewBag.User.ProfilePic" style="width: 16px; height: 16px;">
+                                </a>
+                                <div class="media-body">
+                                    <p class="media-heading" style="">@User.Identity.GetUserName()</p>
+                                    <!-- Textarea -->
+                                    <div class="form-group">
+                                        <div class="col-md-4" style="width: 100%;">
+                                            <textarea class="form-control" id="WriteComment" name="WriteComment"></textarea>
+                                            <input type="button" class="btn btn-primary" style="margin-top:10px" onclick="SaveComment('@ViewBag.Discussion.Discussion_Id', '@User.Identity.GetUserId()', '@User.Identity.GetUserName()')" value="Send" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <hr>
+
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+</div><!-- /.container -->
+
+
+<script>
+
+    function SaveComment(discussionId, userId, userName) {
+
+        var comment = $('#WriteComment').val();
+        if (comment.length != 0) {
+
+            comment = comment.toString().replace(/\n/g, "\\n");
+
+            $.getJSON("/Educator/SaveDiscussionComment?userId=" + userId + "&userName=" + userName
+                + "&discussionId=" + discussionId + "&comment=" + comment, function (data) {
+
+                    if (data) {
+                        $('#Comment').load("/Educator/LoadDiscussionComment?discussionId=" + discussionId);
+                    }
+                    else {
+                        alert("Error: Comment is not saved.");
+                    }
+                });
+        }
+
+    }
+
+</script>
+

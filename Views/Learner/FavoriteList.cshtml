@@ -1,0 +1,96 @@
+﻿@{
+    ViewBag.Title = "Favorite List";
+}
+
+<div class="container">
+
+    <div class="row" style="margin-top: 35px;">
+
+        <div class="col-md-3">
+            <div class="list-group">
+                <span class="list-group-item list-group-title">
+                    Menu
+                </span>
+                <a href="/Learner" class="list-group-item"><span class="glyphicon glyphicon-home"></span>&nbsp;&nbsp;Dashboard</a>
+                <a href="/Learner/EducatorSubscription" class="list-group-item"><span class="glyphicon glyphicon-thumbs-up"></span>&nbsp;&nbsp;Educator Subscription</a>
+                <a href="/Learner/FavoriteList" class="list-group-item active"><span class="glyphicon glyphicon-list-alt"></span>&nbsp;&nbsp;Favorite List</a>
+                <a href="/Learner/Discussions" class="list-group-item"><span class="glyphicon glyphicon-bullhorn"></span>&nbsp;&nbsp;Discussions</a>
+                <a href="/Learner/TextChat" class="list-group-item"><span class="glyphicon glyphicon-font"></span>&nbsp;&nbsp;Text Chat</a>
+                <a href="/Learner/VideoConference" class="list-group-item"><span class="glyphicon glyphicon-facetime-video"></span>&nbsp;&nbsp;Video Conference</a>
+                <a href="/Learner/DesktopSharing" class="list-group-item"><span class="glyphicon glyphicon-film"></span>&nbsp;&nbsp;Desktop Sharing</a>
+                <a href="/Learner/ProfileSetting" class="list-group-item"><span class="glyphicon glyphicon-cog"></span>&nbsp;&nbsp;Settings</a>
+                <a href="/Learner/Inbox" class="list-group-item">
+                    <span class="glyphicon glyphicon-envelope"></span>&nbsp;&nbsp;<span>
+                        Message&nbsp; @if (ViewBag.UnreadMessage != 0)
+                        {<span id="unreadMessageCount" class="badge">@ViewBag.UnreadMessage</span>}
+                    </span>
+                </a>
+            </div>
+        </div>
+        <div class="col-md-9">
+            <div class="panel panel-default panel-items">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Favorite List</h3>
+                </div>
+                <div class="panel-body">
+
+                    <div class="input-group col-md-offset-3 col-md-6">
+                        <input id="searchItem" type="text" class="form-control" placeholder="Enter Item Name">
+                        <span class="input-group-btn">
+                            <button class="btn btn-default" type="button" onclick="LoadFavoriteList()"><span class="glyphicon glyphicon-search"></span> Search</button>
+                        </span>
+                    </div><!-- /input-group -->
+                    <br />
+                    <br />
+                    <hr />
+
+                    <div id="itemList">
+                        @if (ViewBag.ItemCount == 0)
+                        {
+                            <p class="alert-message">There is no Content to Display</p>
+                        }
+                        else
+                        {
+                            foreach (var list in ViewBag.Item)
+                            {
+                                <div class="media" style="margin-top:15px; margin-bottom:15px">
+                                    <a class="pull-left" href="/Learner/ViewEducator?educatorId=@list.Educator_Id">
+                                        <img class="media-object" data-src="holder.js/64x64" alt="64x64" src="@list.ProfilePic" style="width: 64px; height: 64px;">
+                                    </a>
+                                    <div class="media-body">
+                                        <h4 class="media-heading"><a href="/Learner/ViewItem?itemId=@list.Item_Id">@list.Title</a></h4><strong>Category:</strong> &nbsp; @list.Category
+                                        <p id="removefavoriteLink-@list.Item_Id"><small><a href="#" onclick="RemoveFavorite('@list.Item_Id')">Remove From Favorite</a></small></p>
+                                    </div>
+                                </div>
+                            }
+                        }
+                    </div>
+
+                </div>
+
+            </div>
+        </div> <!-- .col-md-10 -->
+    </div>
+
+</div>
+
+<script>
+
+    function RemoveFavorite(itemId) {
+
+        $.getJSON("/Learner/RemoveFavorite?itemId=" + itemId, function (data) {
+            if (data) {
+                LoadFavoriteList();
+            }
+            else {
+                Console.log("Error: Item can't remove from list");
+            }
+        });
+
+    }
+
+    function LoadFavoriteList() {
+        var searchItem = document.getElementById("searchItem").value.toString().replace(/[ ]/g, "%20");
+        $("#itemList").load("/Learner/LoadFavoriteList?itemName=" + searchItem);
+    }
+</script>

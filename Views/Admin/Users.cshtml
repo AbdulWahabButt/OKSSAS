@@ -1,0 +1,125 @@
+﻿@{
+    ViewBag.Title = "Users";
+}
+
+<div class="container">
+
+    <div class="row" style="margin-top: 35px;">
+
+        <div class="col-md-3">
+            <div class="list-group">
+                <span class="list-group-item list-group-title">
+                    Menu
+                </span>
+                <a href="/Admin" class="list-group-item"><span class="glyphicon glyphicon-home"></span>&nbsp;&nbsp;Dashboard</a>
+                <a href="/Admin/StartNewDiscussion" class="list-group-item"><span class="glyphicon glyphicon-pencil"></span>&nbsp;&nbsp;Start New Discussion</a>
+                <a href="/Admin/Discussions" class="list-group-item"><span class="glyphicon glyphicon-bullhorn"></span>&nbsp;&nbsp;Discussions</a>
+                <a href="/Admin/Users" class="list-group-item active"><span class="glyphicon glyphicon-user"></span>&nbsp;&nbsp;Users</a>
+                <a href="/Admin/Items" class="list-group-item"><span class="glyphicon glyphicon-th-list"></span>&nbsp;&nbsp;Items</a>
+                <a href="/Admin/Inbox" class="list-group-item">
+                    <span class="glyphicon glyphicon-envelope"></span>&nbsp;&nbsp;<span>
+                        Message&nbsp; @if (ViewBag.UnreadMessage != 0)
+                        {<span id="unreadMessageCount" class="badge">@ViewBag.UnreadMessage</span>}
+                    </span>
+                </a>
+            </div>
+        </div>
+        <div class="col-md-9">
+            <div class="panel panel-default panel-items">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Users</h3>
+                </div>
+                <div class="panel-body">
+
+                    <div class="input-group col-md-offset-3 col-md-6">
+                        <input id="searchUser" type="text" class="form-control" placeholder="Enter Username">
+                        <span class="input-group-btn">
+                            <button class="btn btn-default" type="button" onclick="LoadUser()"><span class="glyphicon glyphicon-search"></span> Search</button>
+                        </span>
+                    </div><!-- /input-group -->
+                    <br />
+                    <br />
+                    <hr />
+
+                    <div id="userList">
+                        @if (ViewBag.UsersCount == 0)
+                        {
+                            <p class="alert-message">There is no Content to Display</p>
+                        }
+                        else
+                        {
+                            foreach (var list in ViewBag.Users)
+                            {
+                                <div class="col-sm-3 col-md-3" style="margin-bottom:5px; margin-top:5px">
+                                    <div class="thumbnail">
+                                        <a class="pull-left" href="#" style="margin-bottom:10px">
+                                            <img class="media-object col-md-12" data-src="holder.js/64x64" alt="64x64" src="@list.ProfilePic" @*style="width: 150px; height: 150px;"*@>
+                                        </a>
+                                        <div class="caption">
+                                            <h4 class="media-heading"><a href="/Admin/ViewUser?username=@list.UserName">@list.UserName</a></h4>
+                                            <p>@list.UserRole</p>
+                                            <p>
+                                                <a class="btn btn-primary" href="/Admin/ViewUser?username=@list.UserName" onclick="ViewUser('@list.UserName')">View</a>
+                                                @if (!list.IsUserLocked)
+                                                {
+                                                    <a class="btn btn-danger" id="lockLink-@list.Id" href="#" onclick="LockUser('@list.Id')">Lock</a>
+                                                    <a class="btn btn-success" id="unlockLink-@list.Id" href="#" onclick="UnlockUser('@list.Id')" style="display:none">Unlock</a>
+                                                }
+                                                else
+                                                {
+                                                    <a class="btn btn-danger" id="lockLink-@list.Id" href="#" onclick="LockUser('@list.Id')" style="display:none">Lock</a>
+                                                    <a class="btn btn-success" id="unlockLink-@list.Id" href="#" onclick="UnlockUser('@list.Id')">Unlock</a>
+                                                }
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        }
+                    </div>
+                </div>
+            </div>
+
+        </div> <!-- .col-md-10 -->
+
+    </div>
+
+
+</div><!-- /.container -->
+
+<script>
+
+    function LockUser(userId) {
+
+        $.getJSON("/Admin/LockUser?userId=" + userId, function (data) {
+            if (data) {
+                $('#lockLink-' + userId).hide();
+                $('#unlockLink-' + userId).show();
+            }
+            else {
+                $('#lockLink-' + userId).show();
+                $('#unlockLink-' + userId).hide();
+            }
+        });
+    }
+
+    function UnlockUser(userId) {
+
+        $.getJSON("/Admin/UnlockUser?userId=" + userId, function (data) {
+            if (data) {
+                $('#unlockLink-' + userId).hide();
+                $('#lockLink-' + userId).show();
+            }
+            else {
+                $('#lockLink-' + userId).hide();
+                $('#unlockLink-' + userId).show();
+            }
+        });
+    }
+
+    function LoadUser() {
+        var searchUser = document.getElementById("searchUser").value.toString().replace(/[ ]/g, "%20");
+        $("#userList").load("/Admin/LoadUser?userName=" + searchUser);
+    }
+
+</script>

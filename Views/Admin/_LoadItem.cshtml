@@ -1,0 +1,26 @@
+﻿@{
+    Layout = null;
+}
+
+@if (ViewBag.ItemCount == 0)
+{
+    <p class="alert-message">There is no Content to Display</p>
+}
+else
+{
+    foreach (var list in ViewBag.Item)
+    {
+        <div class="media">
+            <a class="pull-left" href="#">
+                <img class="media-object" data-src="holder.js/64x64" alt="64x64" src="@list.ProfilePic" style="width: 64px; height: 64px;">
+            </a>
+            <div class="media-body">
+                <h4 class="media-heading"><a href="/Admin/ViewItem?itemId=@list.Item_Id">@list.Title</a></h4> <strong>Category:</strong> &nbsp; @list.Category
+                <br /><small><a href="" onclick="DeleteItem('@list.Item_Id')">Delete</a></small>
+
+
+                @*<br /><small><a href="/Educator/EditItem?itemId=@list.Item_Id">Edit</a></small>&nbsp;&nbsp;<small><a href="/Educator/DeleteItem?itemId=@list.Item_Id">Delete</a></small>*@
+            </div>
+        </div>
+    }
+}

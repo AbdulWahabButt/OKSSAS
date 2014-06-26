@@ -1,0 +1,199 @@
+﻿@{
+    ViewBag.Title = "Inbox";
+}
+
+<div class="container">
+
+    <div class="row" style="margin-top: 35px;">
+
+        <div class="col-md-3">
+            <div class="list-group">
+                <span class="list-group-item list-group-title">
+                    Menu
+                </span>
+                <a href="/Admin" class="list-group-item"><span class="glyphicon glyphicon-home"></span>&nbsp;&nbsp;Dashboard</a>
+                <a href="/Admin/StartNewDiscussion" class="list-group-item"><span class="glyphicon glyphicon-pencil"></span>&nbsp;&nbsp;Start New Discussion</a>
+                <a href="/Admin/Discussions" class="list-group-item"><span class="glyphicon glyphicon-bullhorn"></span>&nbsp;&nbsp;Discussions</a>
+                <a href="/Admin/Users" class="list-group-item"><span class="glyphicon glyphicon-user"></span>&nbsp;&nbsp;Users</a>
+                <a href="/Admin/Items" class="list-group-item"><span class="glyphicon glyphicon-th-list"></span>&nbsp;&nbsp;Items</a>
+                <a href="/Admin/Inbox" class="list-group-item" style="padding-left:30px">
+                    <span class="glyphicon glyphicon-envelope"></span>&nbsp;&nbsp;<b>
+                        Message&nbsp;&nbsp;@if (ViewBag.UnreadMessage != 0)
+                        {<span id="unreadMessageCount" class="badge">@ViewBag.UnreadMessage</span>}
+                    </b>
+                </a>
+                <a href="/Admin/Inbox" class="list-group-item active" style="margin-left:15px"><span class="glyphicon glyphicon-import"></span>&nbsp;&nbsp;Inbox</a>
+                <a href="/Admin/SentMessage" class="list-group-item" style="margin-left:15px"><span class="glyphicon glyphicon-export"></span>&nbsp;&nbsp;Sent Message</a>
+                <a href="/Admin/ComposeMessage" class="list-group-item" style="margin-left:15px"><span class="glyphicon glyphicon-edit"></span>&nbsp;&nbsp;Compose Message</a>
+            </div>
+        </div>
+        <div class="col-md-9">
+            <div class="panel panel-default panel-message">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Inbox</h3>
+                </div>
+                <div class="panel-body">
+
+                    <div class="input-group col-md-offset-3 col-md-6">
+                        <input id="searchTitle" type="text" class="form-control" placeholder="Enter a Title">
+                        <span class="input-group-btn">
+                            <button class="btn btn-default" type="button" onclick="LoadInbox()"><span class="glyphicon glyphicon-search"></span> Search</button>
+                        </span>
+                    </div><!-- /input-group -->
+                    <br />
+                    <br />
+                    <hr />
+
+                    <div id="messageList">
+                        @if (ViewBag.MessageCount == 0)
+                        {
+                            <p class="alert-message">There is no Content to Display</p>
+                        }
+                        else
+                        {
+                            foreach (var list in ViewBag.Message)
+                            {
+                                <div class="media">
+                                    <a class="pull-left" href="#">
+                                        <img class="media-object" data-src="holder.js/64x64" alt="64x64" src="@list.ProfilePic" style="width: 64px; height: 64px;">
+                                    </a>
+                                    <div class="media-body">
+                                        <h4 class="media-heading"><a href="#" class="modal_show_is_here">@list.Title</a></h4> <strong>From:</strong> @list.FromUserName
+                                        <div class="modal_body_is_here" style="display:none;">@Html.Raw(list.Body)</div>
+                                        <div class="modal_title_is_here" style="display:none;">@list.Title</div>
+                                        <div class="modal_to_user_name_is_here" style="display:none;">@list.ToUserName</div>
+                                        <div class="modal_from_user_name_is_here" style="display:none;">@list.FromUserName</div>
+                                        <div class="modal_message_id_is_here" style="display:none;">@list.Message_Id</div>
+                                        <div id="messageRead-@list.Message_Id" style="display:none;">@Convert.ToBoolean(list.MessageRead)</div>
+
+                                        <br /><small style="margin-right:10px">
+                                            @if (!list.UserRole.Equals("Guest"))
+                                            {
+                                                <a href="/Admin/ComposeMessage?fromUserName=@list.FromUserName">Reply</a>
+                                            }
+                                            else
+                                            { 
+                                                <span style="color:gray">Reply</span>
+                                            }
+                                        </small>
+                                        <small style="margin-right:10px"><a href="#" onclick="DeleteMessage('@list.Message_Id')">Delete</a></small>
+                                        @if (!@list.MessageRead)
+                                        {<small style="margin-right:10px" id="markAsRead-@list.Message_Id"><a href="#" onclick="MarkMessageAsRead(@list.Message_Id)">Mark as Read</a></small>}
+                                        @*<br /><small><a href="/Admin/EditMessage?MessageId=@list.Message_Id">Edit</a></small>&nbsp;&nbsp;<small><a href="/Admin/DeleteMessage?MessageId=@list.Message_Id">Delete</a></small>*@
+                                    </div>
+                                </div>
+                            }
+                        }
+                    </div>
+
+                </div>
+
+            </div>
+        </div> <!-- .col-md-10 -->
+    </div>
+
+</div><!-- /.container -->
+<!-- Modal -->
+<div id="modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div id="modalContent" class="modal-content">
+            <div id="modalHeader" class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <div class="modal-title">
+                    <h4 id="myModalLabel">Modal title</h4>
+                    <h5>Data</h5>
+                </div>
+            </div>
+            <div id="modalBody" class="modal-body">
+                ...
+            </div>
+            <div id="modalFooter" class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+
+    jQuery(document).ready(function ($) {
+        jQuery(document).on('click', '.modal_show_is_here', function () {
+            var modal = jQuery(this).closest('.media-body');
+            var title = modal.find('.modal_title_is_here').html();
+            var body = modal.find('.modal_body_is_here').html();
+            var to_username = modal.find('.modal_to_user_name_is_here').html();
+            var from_username = modal.find('.modal_from_user_name_is_here').html();
+            var message_id = modal.find('.modal_message_id_is_here').html();
+            var message_id = modal.find('.modal_message_id_is_here').html();
+            var message_read = modal.find('#messageRead-' + message_id).html().toString();
+
+            $('#modalHeader').remove();
+            $('#modalBody').remove();
+            $('#modalFooter').remove();
+
+            $('#modalContent').append('<div id="modalHeader" class="modal-header"></div>');
+            $('#modalContent').append('<div id="modalBody" class="modal-body" style="margin-left: 10px">' + body + '</div>');
+            $('#modalContent').append('<div id="modalFooter" class="modal-footer"></div>');
+
+            ////Modal Header
+            $('#modalHeader').append('<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>');
+            $('#modalHeader').append('<h4 class="modal-title" id="myModalLabel">' + title + '</h4>');
+
+            $('#modalFooter').append('<button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>');
+            $('#modalFooter').append('<a class="btn btn-primary" href="/Admin/ComposeMessage?fromUserName=' + from_username + '">Reply</a>');
+            $('#modalFooter').append('<a class="btn btn-danger" href="/Admin/DeleteMessage?messageId=' + message_id + '">Delete</a>');
+
+            $('#modal').modal('show');
+
+            if (message_read == "False") {
+
+                MarkMessageAsRead(message_id.toString());
+            }
+        });
+    });
+
+    function MarkMessageAsRead(message_id) {
+        $.getJSON("/Admin/MarkMessageAsRead?messageId=" + message_id, function (data) {
+
+            if (data >= 0) {
+                if (data == 0) {
+                    $('#unreadMessageCount').hide()
+                }
+                else {
+                    $('#unreadMessageCount').html(data)
+                }
+
+                $('#markAsRead-' + message_id).hide();
+                $('#messageRead-' + message_id).html("True");
+            }
+            else {
+                alert("Error: Message does not marked as read.");
+            }
+        });
+    }
+
+    function DeleteMessage(messageId) {
+
+        $.getJSON("/Admin/DeleteInboxMessage?messageId=" + messageId, function (data) {
+
+            if (data >= 0) {
+                if (data == 0) {
+                    $('#unreadMessageCount').hide()
+                }
+                else {
+                    $('#unreadMessageCount').html(data)
+                }
+                LoadInbox();
+            }
+            else {
+                alert("Error: Message does not marked as read.");
+            }
+        });
+    }
+
+    function LoadInbox() {
+        var searchTitle = document.getElementById("searchTitle").value.toString().replace(/[ ]/g, "%20");
+        $("#messageList").load("/Admin/LoadInbox?title=" + searchTitle);
+    }
+</script>

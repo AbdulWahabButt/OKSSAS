@@ -1,0 +1,214 @@
+﻿@{
+    ViewBag.Title = "Edit Profile";
+}
+
+<div class="container">
+
+    <div class="row" style="margin-top: 35px;">
+
+        <div class="col-md-3">
+
+            <div class="list-group">
+                <span class="list-group-item list-group-title">
+                    Menu
+                </span>
+                <a href="/Educator" class="list-group-item"><span class="glyphicon glyphicon-home"></span>&nbsp;&nbsp;Dashboard</a>
+                <a href="/Educator/WriteAnArticle" class="list-group-item"><span class="glyphicon glyphicon-pencil"></span>&nbsp;&nbsp;Write an Article</a>
+                <a href="/Educator/UploadContent" class="list-group-item"><span class="glyphicon glyphicon-upload"></span>&nbsp;&nbsp;Upload Content</a>
+                <a href="/Educator/Items" class="list-group-item"><span class="glyphicon glyphicon-th-list"></span>&nbsp;&nbsp;My Items</a>
+                <a href="/Educator/Discussions" class="list-group-item"><span class="glyphicon glyphicon-bullhorn"></span>&nbsp;&nbsp;Discussions</a>
+                <a href="/Educator/TextChat" class="list-group-item"><span class="glyphicon glyphicon-font"></span>&nbsp;&nbsp;Text Chat</a>
+                <a href="/Educator/VideoConference" class="list-group-item"><span class="glyphicon glyphicon-facetime-video"></span>&nbsp;&nbsp;Video Conference</a>
+                <a href="/Educator/DesktopSharing" class="list-group-item"><span class="glyphicon glyphicon-film"></span>&nbsp;&nbsp;Desktop Sharing</a>
+                <a href="/Educator/ProfileSetting" class="list-group-item active"><span class="glyphicon glyphicon-cog"></span>&nbsp;&nbsp;Settings</a>
+                <a href="/Educator/Revenue" class="list-group-item"><span class="glyphicon glyphicon-usd"></span>&nbsp;&nbsp;Revenue</a>
+                <a href="/Educator/Inbox" class="list-group-item">
+                    <span class="glyphicon glyphicon-envelope"></span>&nbsp;&nbsp;<span>
+                        Message&nbsp; @if (ViewBag.UnreadMessage != 0)
+                        {<span id="unreadMessageCount" class="badge">@ViewBag.UnreadMessage</span>}
+                    </span>
+                </a>
+            </div>
+        </div>
+
+        <div class="col-md-9">
+            <div class="panel panel-default panel-profile">
+                <div class="panel-heading">
+                    <h3 class="panel-title"> Account Info</h3>
+                </div>
+                <div class="panel-body">
+
+                    <form action="/Educator/EditProfile" class="form-horizontal" method="post" role="form" onsubmit="SavePic()">
+                        @*@using (Html.BeginForm("EditProfile", "Educator", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+                            {*@
+                        <fieldset>
+
+                            <div class="col-md-9">
+
+                                <div class="form-group">
+                                    <label class="col-md-4 control-label" for="textinput">Introduction</label>
+                                    <div class="col-md-8">
+                                        <textarea class="form-control" id="Introduction" name="Introduction" style="width: 100%;height: 150px;">@ViewBag.User.Introduction</textarea>
+                                    </div>
+                                </div>
+
+                                <hr />
+                                <h3>Education</h3>
+                                <div class="form-group">
+                                    <label class="col-md-4 control-label" for="textinput">College Name</label>
+                                    <div class="col-md-8">
+                                        <input id="CollegeName" name="CollegeName" type="text" placeholder="" class="form-control input-md" value="@ViewBag.User.CollegeName">
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="col-md-4 control-label" for="textinput">Major Courses</label>
+                                    <div class="col-md-8">
+                                        <input id="CollegeCourses" name="CollegeCourses" type="text" placeholder="" class="form-control input-md" value="@ViewBag.User.CollegeCourses">
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="col-md-4 control-label" for="textinput">School Name</label>
+                                    <div class="col-md-8">
+                                        <input id="SchoolName" name="SchoolName" type="text" placeholder="" class="form-control input-md" value="@ViewBag.User.SchoolName">
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="col-md-4 control-label" for="textinput">Major Courses</label>
+                                    <div class="col-md-8">
+                                        <input id="SchoolCourses" name="SchoolCourses" type="text" placeholder="" class="form-control input-md" value="@ViewBag.User.SchoolCourses">
+                                    </div>
+                                </div>
+
+                                <hr />
+                                <h3>Work</h3>
+
+                                <div class="form-group">
+                                    <label class="col-md-4 control-label" for="textinput">Occupation</label>
+                                    <div class="col-md-8">
+                                        <input id="Occupation" name="Occupation" type="text" placeholder="" class="form-control input-md" value="@ViewBag.User.Occupation">
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="col-md-4 control-label" for="textinput">Skills</label>
+                                    <div class="col-md-8">
+                                        <input id="Skills" name="Skills" type="text" placeholder="" class="form-control input-md" value="@ViewBag.User.Skills">
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="col-md-4 control-label" for="textinput">Employment</label>
+                                    <div class="col-md-8">
+                                        <input id="Employment" name="Employment" type="text" placeholder="" class="form-control input-md" value="@ViewBag.User.Employment">
+                                    </div>
+                                </div>
+
+                                <hr />
+                                <h3>Basic Information</h3>
+
+                                <div class="form-group">
+                                    <label class="col-md-4 control-label" for="textinput">Gender</label>
+                                    <div class="col-md-8">
+                                        <input id="Gender" name="Gender" type="text" placeholder="" class="form-control input-md" value="@ViewBag.User.Gender">
+                                    </div>
+                                </div>
+                                <style>
+                                    .dropdown-menu {
+                                        position: absolute !important;
+                                        top: 927px !important;
+                                        left: 642px !important;
+                                    }
+                                </style>
+
+                                <div class="form-group">
+                                    <label class="col-md-4 control-label" for="textinput">Birthdate</label>
+                                    <div class="col-md-8" style="position:relative;">
+                                        @{
+                                            DateTime birthDate = ViewBag.User.BirthDate;
+                                            <input id="BirthDate" name="BirthDate" data-date-format="DD/MM/YYYY" type="text" placeholder="" class="form-control input-md" value="@birthDate.ToString("MM/dd/yyyy")">
+                                        }
+                                    </div>
+                                </div>
+
+                                <hr />
+                                <h3>Contact Information</h3>
+
+                                <div class="form-group">
+                                    <label class="col-md-4 control-label" for="textinput">Home</label>
+                                    <div class="col-md-8">
+                                        <input id="HomeContact" name="HomeContact" type="text" placeholder="" class="form-control input-md" value="@ViewBag.User.HomeContact">
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="col-md-4 control-label" for="textinput">Work</label>
+                                    <div class="col-md-8">
+                                        <input id="WorkContact" name="WorkContact" type="text" placeholder="" class="form-control input-md" value="@ViewBag.User.WorkContact">
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            @*<div class="col-md-3">
+                                    <img data-src="holder.js/200x200" class="img-thumbnail" alt="200x200" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyMDAiIGhlaWdodD0iMjAwIj48cmVjdCB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgZmlsbD0iI2VlZSI+PC9yZWN0Pjx0ZXh0IHRleHQtYW5jaG9yPSJtaWRkbGUiIHg9IjEwMCIgeT0iMTAwIiBzdHlsZT0iZmlsbDojYWFhO2ZvbnQtd2VpZ2h0OmJvbGQ7Zm9udC1zaXplOjEzcHg7Zm9udC1mYW1pbHk6QXJpYWwsSGVsdmV0aWNhLHNhbnMtc2VyaWY7ZG9taW5hbnQtYmFzZWxpbmU6Y2VudHJhbCI+MjAweDIwMDwvdGV4dD48L3N2Zz4=" style="width: 100%; height: auto;">
+                                    <div style="margin-top:10px" id="imageButton">
+                                        <input type="button" class="btn btn-default" value="Select Image"/>
+                                    </div>
+                                </div>*@
+
+                            <div class="col-md-3 fileinput fileinput-new" data-provides="fileinput">
+                                <div class="fileinput-new thumbnail" style="width: 200px; height: 150px;">
+                                    <img data-src="holder.js/100%x100%" alt="..." id="ProfileImage" src="@ViewBag.User.ProfilePic">
+                                    <input type="hidden" id="ProfilePic" name="ProfilePic" value="@ViewBag.User.ProfilePic" />
+                                </div>
+                                <div id="imgDiv" class="fileinput-preview fileinput-exists thumbnail" style="max-width: 200px; max-height: 150px;"></div>
+                                <div>
+                                    <span class="btn btn-default btn-file"><span class="fileinput-new">Select image</span><span class="fileinput-exists">Change</span><input type="file" name="..."></span>
+                                    <a href="#" class="btn btn-default fileinput-exists" data-dismiss="fileinput">Remove</a>
+                                </div>
+                            </div>
+
+                        </fieldset>
+
+                        <div class="col-md-offset-5 col-md-7" style="margin-top:10px">
+                            <input type="submit" class="btn btn-primary" value="Done" />&nbsp;&nbsp;
+                            <a href="/Educator/ProfileSetting" class="btn btn-default">Cancel</a>
+                        </div>
+                        @*}*@
+                    </form>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+
+</div><!-- /.container -->
+<!-- Bootstrap core JavaScript
+================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+@*<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+    <script src="assets/js/bootstrap.min.js"></script>*@
+<!-- javascript
+================================================== -->
+@*<script src="assets/js/highcharts.js"></script>
+    <script src="assets/js/exporting.js"></script>*@
+
+<script>
+    
+    function SavePic() {
+        var imgSrc = $("#imgDiv > img").attr("src");
+        $("#ProfilePic").val(imgSrc);
+        return true;
+    }
+
+    $(function () {
+        $('#BirthDate').datetimepicker({
+            pickTime: false
+        });
+    });
+</script>

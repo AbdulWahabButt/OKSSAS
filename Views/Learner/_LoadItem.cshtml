@@ -1,0 +1,32 @@
+﻿@{
+    Layout = null;
+}
+
+@if (ViewBag.ItemCount == 0)
+{
+    <p class="alert-message">There is no Content to Display</p>
+}
+else
+{
+    foreach (var list in ViewBag.Item)
+    {
+        <div class="media" style="margin-top:15px; margin-bottom:15px">
+            <a class="pull-left" href="/Learner/ViewEducator?educatorId=@list.Educator_Id">
+                <img class="media-object" data-src="holder.js/64x64" alt="64x64" src="@list.ProfilePic" style="width: 64px; height: 64px;">
+            </a>
+            <div class="media-body">
+                <h4 class="media-heading"><a href="/Learner/ViewItem?itemId=@list.Item_Id">@list.Title</a></h4><strong>Category:</strong> &nbsp; @list.Category
+                @if (!list.IsAddedToFavorite)
+                {
+                    <p id="favoriteLink-@list.Item_Id"><small><a href="#" onclick="AddToFavorite('@list.Item_Id')">Add to Favorite</a></small></p>
+                    <p id="removefavoriteLink-@list.Item_Id" style="display:none"><small><a href="#" onclick="RemoveFavorite('@list.Item_Id')">Remove From Favorite</a></small></p>
+                }
+                else
+                {
+                    <p id="favoriteLink-@list.Item_Id" style="display:none"><small><a href="#" onclick="AddToFavorite('@list.Item_Id')">Add to Favorite</a></small></p>
+                    <p id="removefavoriteLink-@list.Item_Id"><small><a href="#" onclick="RemoveFavorite('@list.Item_Id')">Remove From Favorite</a></small></p>
+                }
+            </div>
+        </div>
+    }
+}

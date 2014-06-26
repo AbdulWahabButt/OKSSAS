@@ -1,0 +1,25 @@
+﻿@{
+    Layout = null;
+}
+
+@if (ViewBag.MessageCount == 0)
+{
+    <p class="alert-message">There is no Content to Display</p>
+}
+else
+{
+    foreach (var list in ViewBag.Message)
+    {
+        <div class="media">
+            <a class="pull-left" href="#">
+                <img class="media-object" data-src="holder.js/64x64" alt="64x64" src="@list.ProfilePic" style="width: 64px; height: 64px;">
+            </a>
+            <div class="media-body">
+                <h4 class="media-heading"><a href="#" onclick="showModal('@list.Title', '@list.ToUserName','@list.FromUserName', '@list.Message_Id')">@list.Title</a></h4> <strong>To:</strong> @list.ToUserName
+                <input type="hidden" id="body+@list.Message_Id" value="@list.Body" />
+                <br /><small style="margin-right:10px"><a href="#" onclick="DeleteMessage('@list.Message_Id')">Delete</a></small>
+                @*<br /><small><a href="/Educator/EditMessage?MessageId=@list.Message_Id">Edit</a></small>&nbsp;&nbsp;<small><a href="/Educator/DeleteMessage?MessageId=@list.Message_Id">Delete</a></small>*@
+            </div>
+        </div>
+    }
+}

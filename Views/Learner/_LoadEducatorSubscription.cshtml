@@ -1,0 +1,26 @@
+﻿@{
+    Layout = null;
+}
+
+@if (ViewBag.EducatorCount == 0)
+{
+    <p class="alert-message">There is no Content to Display</p>
+}
+else
+{
+    foreach (var list in ViewBag.Educator)
+    {
+        <div class="col-sm-3 col-md-3" style="margin-bottom:5px; margin-top:5px">
+            <div class="thumbnail">
+                <a class="pull-left" href="#" style="margin-bottom:10px">
+                    <img class="media-object" data-src="holder.js/64x64" alt="64x64" src="@list.ProfilePic" style="width: 150px; height: 150px;">
+                </a>
+                <div class="caption">
+                    <h4 class="media-heading"><a href="/Learner/ViewEducator?educatorId=@list.Id">@list.UserName</a></h4>
+                    <p>@list.Introduction</p>
+                    <p><a class="btn btn-success" href="#" onclick="UnsubscribeEducator('@list.Id')">Unsubscribe</a></p>
+                </div>
+            </div>
+        </div>
+    }
+}

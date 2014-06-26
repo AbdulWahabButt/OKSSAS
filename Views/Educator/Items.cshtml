@@ -1,0 +1,141 @@
+﻿@{
+    ViewBag.Title = "Items";
+}
+
+<div class="container">
+
+    <div class="row" style="margin-top: 35px;">
+
+        <div class="col-md-3">
+            <div class="list-group">
+                <span class="list-group-item list-group-title">
+                    Menu
+                </span>
+                <a href="/Educator" class="list-group-item"><span class="glyphicon glyphicon-home"></span>&nbsp;&nbsp;Dashboard</a>
+                <a href="/Educator/WriteAnArticle" class="list-group-item"><span class="glyphicon glyphicon-pencil"></span>&nbsp;&nbsp;Write an Article</a>
+                <a href="/Educator/UploadContent" class="list-group-item"><span class="glyphicon glyphicon-upload"></span>&nbsp;&nbsp;Upload Content</a>
+                <a href="/Educator/Items" class="list-group-item active"><span class="glyphicon glyphicon-th-list"></span>&nbsp;&nbsp;My Items</a>
+                <a href="/Educator/Discussions" class="list-group-item"><span class="glyphicon glyphicon-bullhorn"></span>&nbsp;&nbsp;Discussions</a>
+                <a href="/Educator/TextChat" class="list-group-item"><span class="glyphicon glyphicon-font"></span>&nbsp;&nbsp;Text Chat</a>
+                <a href="/Educator/VideoConference" class="list-group-item"><span class="glyphicon glyphicon-facetime-video"></span>&nbsp;&nbsp;Video Conference</a>
+                <a href="/Educator/DesktopSharing" class="list-group-item"><span class="glyphicon glyphicon-film"></span>&nbsp;&nbsp;Desktop Sharing</a>
+                <a href="/Educator/ProfileSetting" class="list-group-item"><span class="glyphicon glyphicon-cog"></span>&nbsp;&nbsp;Settings</a>
+                <a href="/Educator/Revenue" class="list-group-item"><span class="glyphicon glyphicon-usd"></span>&nbsp;&nbsp;Revenue</a>
+                <a href="/Educator/Inbox" class="list-group-item">
+                    <span class="glyphicon glyphicon-envelope"></span>&nbsp;&nbsp;<span>
+                        Message&nbsp; @if (ViewBag.UnreadMessage != 0)
+                        {<span id="unreadMessageCount" class="badge">@ViewBag.UnreadMessage</span>}
+                    </span>
+                </a>
+            </div>
+        </div>
+        <div class="col-md-9">
+            <div class="panel panel-default panel-items">
+                <div class="panel-heading">
+                    <h3 class="panel-title"> Your Publishings</h3>
+                </div>
+                <div class="panel-body">
+
+                    <div class="input-group col-md-offset-3 col-md-6">
+                        <input id="searchTitle" type="text" class="form-control" placeholder="Enter a Title">
+                        <span class="input-group-btn">
+                            <button class="btn btn-default" type="button" onclick="LoadItem()"><span class="glyphicon glyphicon-search"></span> Search</button>
+                        </span>
+                    </div><!-- /input-group -->
+                    <br />
+                    <br />
+                    <hr />
+
+                    <div id="itemList">
+                        @if (ViewBag.ItemCount == 0)
+                        {
+                            <p class="alert-message">There is no Content to Display</p>
+                        }
+                        else
+                        {
+                            foreach (var list in ViewBag.Item)
+                            {
+                                <div class="media">
+                                    <a class="pull-left" href="#">
+                                        <img class="media-object" data-src="holder.js/64x64" alt="64x64" src="@list.ProfilePic" style="width: 64px; height: 64px;">
+                                    </a>
+                                    <div class="media-body">
+                                        <h4 class="media-heading"><a href="/Educator/ViewItem?itemId=@list.Item_Id">@list.Title</a></h4> <strong>Category:</strong> &nbsp; @list.Category
+                                        @if (list.FileName == null || list.FileName.Length < 2)
+                                        {
+                                            <br /><small style="margin-right:5px"><a href="/Educator/EditItem?itemId=@list.Item_Id">Edit</a></small>
+                                            <small><a href="" onclick="DeleteItem('@list.Item_Id')">Delete</a></small>
+                                        }
+                                        else
+                                        {
+                                            <br /><small><a href="" onclick="DeleteItem('@list.Item_Id')">Delete</a></small>
+                                        }
+
+                                        @*<br /><small><a href="/Educator/EditItem?itemId=@list.Item_Id">Edit</a></small>&nbsp;&nbsp;<small><a href="/Educator/DeleteItem?itemId=@list.Item_Id">Delete</a></small>*@
+                                    </div>
+                                </div>
+                            }
+                        }
+                    </div>
+                </div>
+            </div>
+
+        </div> <!-- .col-md-10 -->
+
+    </div>
+
+
+</div><!-- /.container -->
+
+<script>
+
+    function DeleteItem(itemId) {
+
+        //alert("Delete function");
+
+        //$.post("/Educator/DeleteItem?itemId=" + itemId, function (data) {
+        //    if (data.success == true) {
+        //        alert("Success");
+        //        //if (data.Object != null) {
+        //        //    //here I could call the properties of my object, as below:
+        //        //    alert(data.Object.Name); //assuming your object has a property name
+        //        //}
+        //    }
+        //    else { alert("error"); }
+        //});
+
+        //$.ajax({
+        //    type: "GET",
+        //    url: "/Educator/DeleteItem?itemId=" + itemId,
+        //    contentType: "application/json; charset=utf-8",
+        //    dataType: "json",
+        //    success: function (data) {
+        //        if (data != null && data) {
+        //            alert('Success');
+        //        } else {
+        //            alert('Error');
+        //        }
+        //        LoadItem();
+        //    },
+        //    error: function (XMLHttpRequest, textStatus, errorThrown) {
+        //        alert(textStatus);
+        //    }
+        //});
+
+
+        $.getJSON("/Educator/DeleteItem?itemId=" + itemId, function (data) {
+            if (data) {
+                LoadItem();
+            }
+            else {
+                Console.log("Error: Item is not deleted");
+            }
+        });
+    }
+
+    function LoadItem() {
+        var searchTitle = document.getElementById("searchTitle").value.toString().replace(/[ ]/g, "%20");
+        $("#itemList").load("/Educator/LoadItem?title=" + searchTitle);
+    }
+
+</script>
