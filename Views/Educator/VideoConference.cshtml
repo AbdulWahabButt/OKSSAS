@@ -2,12 +2,13 @@
     ViewBag.Title = "Video Conference";
 }
 
+
 <script src="~/Scripts/firebase.js"></script>
 <script src="~/Scripts/RTCPeerConnection-v1.5.js"></script>
 <script src="~/Scripts/conference.js"></script>
 <script src="~/Scripts/getMediaElement.min.js"></script>
-<link rel="stylesheet" href="~/Scripts/skins/lightgray/jquery-ui-1.10.4.custom.min.css" />
-<script src="~/Scripts/jquery-ui-1.10.4.custom.min.js"></script>
+
+
 
 <div class="container">
 
@@ -47,41 +48,24 @@
                         <fieldset>
 
                             <!-- Text input-->
-                            @*<div class="form-group">
-                                    <label class="col-md-4 control-label" for="title">Conference Code</label>
-                                    <div class="col-md-4">
-                                        <input id="conference-name" name="conference_code" type="text" placeholder="Enter conference code here..." class="form-control input-md" required="">
-                                    </div>
-                                    <div>
-                                        <code><strong id="unique-token">#8YOEQG49-R13V7VI</strong></code>
-                                    </div>
-                                </div>*@
-
-                            <strong id="unique-token" style="display:none">#8YOEQG49-R13V7VI</strong>
-
                             <div class="form-group">
-                                <label class="col-md-4 control-label" for="Tags">Invite Learner</label>
-                                <div class="col-md-8">
-                                    <input id="invitation" type="text" class="tags form-control" name="invitation" data-role="tagsinput" placeholder="Write Username" style="margin-top:10px;" />
+                                <label class="col-md-4 control-label" for="title">Conference Code</label>
+                                <div class="col-md-4">
+                                    <input id="conference-name" name="conference_code" type="text" placeholder="Enter conference code here..." class="form-control input-md" required="">
+
+                                </div>
+                                <div>
+                                    <code><strong id="unique-token">#8YOEQG49-R13V7VI</strong></code>
                                 </div>
                             </div>
 
                             <!-- Button -->
                             <div class="form-group">
                                 <label class="col-md-4 control-label" for="submit"></label>
-                                <div class="col-md-8">
-                                    <button id="invite" name="invite" class="btn btn-success" onclick="SendInvitation('@ViewBag.User.Id')">Send Invitation</button>&nbsp;&nbsp;
-                                    <button id="setup-new-room" name="submit" class="btn btn-primary">Start Conference</button>
+                                <div class="col-md-4">
+                                    <button id="setup-new-room" name="submit" class="btn btn-primary">Join Conference</button>
                                 </div>
                             </div>
-
-                            <!-- Button -->
-                            @*<div class="form-group">
-                                    <label class="col-md-4 control-label" for="submit"></label>
-                                    <div class="col-md-4">
-
-                                    </div>
-                                </div>*@
 
                         </fieldset>
                     </form>
@@ -108,6 +92,7 @@
                             </section>
 
                             <script>
+
 
                                 var config = {
                                     openSocket: function (config) {
@@ -293,37 +278,5 @@
     <script src="assets/js/exporting.js"></script>*@
 
 <script>
-
-    function SendInvitation(userId) {
-
-        var invitedUser = $('#invitation').val();
-        var code = document.getElementById('unique-token').innerText.toString().replace("#", "%20");
-
-        $.getJSON("/Educator/SendInvitation?userId=" + userId + "&invitedUser=" + invitedUser
-            + "&code=" + code, function (data) {
-                if (data) {
-                    Console.log("Successfully sended");
-                }
-                else {
-                    Console.log("Error: Item is not deleted");
-                }
-            });
-    }
-
-    jQuery(document).ready(function () {
-        var availableTags = [
-            @Html.Raw(ViewBag.SubscriberList)
-        ];
-
-        jQuery("#invitation").autocomplete({
-            source: availableTags
-        });
-
-        $("#invitation").blur(function () {
-            var e = jQuery.Event("keydown");
-            e.which = 13; // Enter
-            $("#invitation").trigger(e);
-        });
-    });
 
 </script>
